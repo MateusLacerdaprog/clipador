@@ -40,6 +40,8 @@ PADRAO = {
     "legenda_base": None,          # base_legenda() na hora da transcricao (detecta legenda desatualizada)
     "legenda_origem": "narracao",   # narracao (tempos no relogio da narracao) | video (audio do video, relogio da montagem)
     "proxy_hash": None,             # versao da montagem usada na ultima previa (proxy.mp4)
+    "canal": None,                  # canal do estudio (core/canais.py) — limite diario, originalidade, resultados
+    "roteiro_id": None,             # roteiro aprovado que originou o projeto (core/roteiros.py)
 }
 
 # bibliotecas de audio compartilhadas entre projetos (o usuario coloca os arquivos)
