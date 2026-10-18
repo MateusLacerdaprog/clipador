@@ -1,0 +1,19 @@
+# Clipador — dependências com as versões em uso (Python 3.13). Instalar: python -m pip install -r requirements.txt
+# FFmpeg/ffprobe vêm à parte (no PATH). tests/test_qualidade.py confere que todo import externo está aqui.
+fastapi==0.143.3
+uvicorn==0.54.0
+pydantic==2.14.1
+python-multipart==0.0.32
+httpx==0.28.1
+numpy==2.5.4
+scipy==1.18.1
+soundfile==0.14.0
+opencv-python==5.0.0.93
+mediapipe==1.1.1
+faster-whisper==1.2.1
+yt-dlp==2026.8.19
+keyring==25.7.0
+anthropic==1.15.0
+openai==3.31.0
+google-genai==2.31.0
+pytest==9.1.1
