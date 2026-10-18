@@ -13,7 +13,7 @@ def main():
         from . import automacao
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")     # console do Windows: aspas e acentos
         sys.exit(automacao.main(sys.argv[1:]))
-    if len(sys.argv) > 1 and sys.argv[1] in ("canal", "ideia", "roteiro"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("canal", "ideia", "roteiro", "esteira", "metricas", "experimento", "custo"):
         from . import cli_estudio
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
         sys.exit(cli_estudio.main(sys.argv[1:]))
