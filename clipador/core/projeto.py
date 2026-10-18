@@ -86,9 +86,11 @@ def _completar(p):
         else:
             out[k] = v
     out["audio"] = audio.migrar(out.get("audio"))
-    from . import publicacao, react
+    from . import publicacao, react, recursos
     out["react"] = react.completar(out.get("react"))
     out["publicacao"] = publicacao.completar(out.get("publicacao"))
+    for f in out["fontes"]:                    # origem/licenca de cada video (projetos antigos: "nao_informado")
+        f["direitos"] = recursos.completar(f.get("direitos"))
     out["versao"] = VERSAO
     return out
 
@@ -233,6 +235,7 @@ def hash_previa(p):
     for f in relevante["fontes"]:
         f.pop("cenas", None)
         f.pop("destaques", None)
+        f.pop("direitos", None)               # registro de licenca nao muda a imagem
     if relevante.get("audio"):
         relevante["audio"] = {k: v for k, v in relevante["audio"].items() if k != "narracao"}
     if relevante["layout"] != "comparacao":      # so muda o video na comparacao (nao invalida projetos antigos)
@@ -276,6 +279,7 @@ def hash_conteudo(p):
     for f in relevante["fontes"]:
         f.pop("cenas", None)
         f.pop("destaques", None)          # analisar momentos nao muda o video: nao pode invalidar a aprovacao
+        f.pop("direitos", None)           # registrar a licenca tambem nao
     if relevante["layout"] != "comparacao":
         relevante.pop("comparacao")
     h = hashlib.sha1(json.dumps(relevante, sort_keys=True).encode())
