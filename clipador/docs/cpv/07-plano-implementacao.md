@@ -4,6 +4,20 @@ Princípios: mudanças pequenas e reversíveis; cada item com teste; **núcleo +
 pede pela conversa e o Claude executa — memória "fluxo-comando-aqui"), telas depois para ajuste; nada publica
 sozinho; nenhuma promessa de viralização/receita.
 
+## Situação em 18/10/2026
+| Item | Estado | Commit |
+|---|---|---|
+| I1 Git | IMPLEMENTADO (identidade genérica, sem dados pessoais; `main` + ramo `cpv-implementacao`) | a5f50a7 |
+| I2 requirements.txt | IMPLEMENTADO + TESTADO | 59060d4 |
+| I3 Recursos e licenças | IMPLEMENTADO + TESTADO | 7972593 |
+| I4 Conformidade | IMPLEMENTADO + TESTADO | 9ed6245 |
+| I5–I8 Canais, ideias CPV, roteiros, originalidade | IMPLEMENTADO + TESTADO | 44e6a89 |
+| I9–I12 Esteira, métricas, experimentos, finanças | IMPLEMENTADO + TESTADO | 9390700 |
+| I13 Gerador de mapas | PENDENTE (precisa baixar dados Natural Earth — autorização) | — |
+| I14 Clone da própria voz | PENDENTE (decisão do usuário: narração própria em PT; sem necessidade agora) | — |
+| I15 Telas Canais/Ideias/Roteiro/Esteira/Resultados | PENDENTE (núcleo, API e CLI prontos) | — |
+| I16 Publicação via API | PENDENTE e opcional (OAuth + autorização explícita; nunca automática) | — |
+
 ## Backlog priorizado
 
 | ID | Prioridade | Item | Depende de | Módulos | Pronto quando | Teste / evidência |
