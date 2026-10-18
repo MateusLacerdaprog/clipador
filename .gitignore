@@ -33,3 +33,6 @@ __pycache__/
 # Configuracao desta maquina e scripts com caminhos pessoais
 .claude/launch.json
 cortar_memes.py
+
+# Dados do estudio (canais, ideias, roteiros, metricas)
+estudio/

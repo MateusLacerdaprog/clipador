@@ -4,6 +4,7 @@ Cada item diz a regra oficial que o motiva (F1…F11 do documento). Nada aqui ga
 fair use: aponta riscos para revisão humana. Itens no formato do verificador (nivel, titulo, detalhe, como_resolver)
 com o campo extra "regra".
 """
+import datetime as dt
 import json
 import os
 import re
@@ -13,7 +14,7 @@ from . import projeto, recursos
 
 # termos procurados no título, no texto do início e nas legendas dos primeiros 7 s (sem acento, minúsculo)
 TERMOS = {
-    "enganoso": (r"\b(vazad\w*|leak\w*|exclusiv\w*)\b", "aviso", "F5",
+    "enganoso": (r"\b(vaz(?:ou|aram|ad\w*|ament\w*)|leak\w*|exclusiv\w*)\b", "aviso", "F5",
                  "Termo que promete algo verificável", "Registre a fonte que comprova (ou troque o termo): metadado enganoso é spam."),
     "afirmacao": (r"\b(confirmad\w*|oficial\w*|official)\b", "dica", "F5",
                   "Afirmação que pede fonte", "Tenha a fonte oficial registrada no roteiro/descrição."),
@@ -120,5 +121,30 @@ def duplicados(p):
                   "Publicar cópias com mudanças mínimas é spam (repost/produção em massa). Mude o gancho, o ângulo ou o roteiro.", "F5")]
 
 
+def limite_diario(p):
+    """FINAL exportados hoje nos projetos do mesmo canal × limite_dia do canal (qualidade > volume; F5)."""
+    if not p.get("canal"):
+        return []
+    from . import canais
+    try:
+        limite = canais.obter(p["canal"]).get("limite_dia", 1)
+    except (FileNotFoundError, ValueError):
+        return []
+    hoje, n = dt.date.today(), 0
+    for nome in projeto.listar():
+        try:
+            if projeto.carregar(nome).get("canal") != p["canal"]:
+                continue
+        except (OSError, ValueError):
+            continue
+        d = projeto.pasta(nome)
+        n += sum(1 for f in os.listdir(d) if f.startswith("FINAL_") and f.endswith(".mp4")
+                 and dt.date.fromtimestamp(os.path.getmtime(os.path.join(d, f))) == hoje)
+    if n < limite:
+        return []
+    return [_item("aviso", "Limite diário do canal atingido", f"{n} FINAL hoje no canal {p['canal']} (limite {limite})",
+                  "Publicar muitos vídeos parecidos por dia é o padrão de produção em massa que a política mira; deixe para amanhã.", "F5")]
+
+
 def verificar(p):
-    return termos_de_risco(p) + direitos(p) + duplicados(p)
+    return termos_de_risco(p) + direitos(p) + duplicados(p) + limite_diario(p)

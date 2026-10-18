@@ -12,6 +12,7 @@ import pytest
 
 _TMP = tempfile.mkdtemp(prefix="clipador_testes_")
 os.environ["CLIPADOR_PROJETOS"] = os.path.join(_TMP, "projetos")
+os.environ["CLIPADOR_ESTUDIO"] = os.path.join(_TMP, "estudio")       # canais/ideias/roteiros de teste
 os.environ["CLIPADOR_COFRE"] = "Clipador-IA-TESTES"      # nunca mexe nas chaves reais do usuario
 for _v in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY"):
     os.environ.pop(_v, None)

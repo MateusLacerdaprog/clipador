@@ -13,8 +13,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .comum import ESTATICO, HOSTS_LOCAIS
-from .rotas import (audio, comandos, fontes, ia, kits, legendas, projetos, publicacao, react, referencias, revisao,
-                    timeline, zoom)
+from .rotas import (audio, comandos, estudio, fontes, ia, kits, legendas, projetos, publicacao, react, referencias,
+                    revisao, timeline, zoom)
 
 app = FastAPI(title="Clipador")
 app.mount("/static", StaticFiles(directory=ESTATICO), name="static")
@@ -52,5 +52,5 @@ def inicio():
 
 
 # ordem importa: o FastAPI casa a primeira rota que servir (a das areas antigas e a do app.py monolitico original)
-for _m in (projetos, fontes, zoom, kits, revisao, react, timeline, audio, legendas, ia, referencias, comandos, publicacao):
+for _m in (projetos, fontes, zoom, kits, revisao, react, timeline, audio, legendas, ia, referencias, comandos, publicacao, estudio):
     app.include_router(_m.router)
