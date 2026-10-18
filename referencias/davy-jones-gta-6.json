@@ -1,0 +1,155 @@
+{
+ "id": "davy-jones-gta-6",
+ "nome": "Davy Jones GTA 6",
+ "aspectos": [
+  "duracao",
+  "publicacao",
+  "titulos",
+  "fala",
+  "capitulos",
+  "visual"
+ ],
+ "fonte": {
+  "canais": [
+   "https://www.youtube.com/channel/UCK4vuzS4fX8qxWi5Ik7XQYA",
+   "https://www.youtube.com/channel/UCUTMBmYeeK1S-wZ6Jo9WbWg"
+  ],
+  "data": "2026-10-16",
+  "amostra": {
+   "curtos": 102,
+   "longos": 82,
+   "detalhados": 26
+  }
+ },
+ "observado": {
+  "curtos": {
+   "n": 102,
+   "com_duracao": 14,
+   "dur_mediana_s": 25.0,
+   "dur_p25_s": 23,
+   "dur_p75_s": 29,
+   "views_mediana": 29000,
+   "views_max": 1000000
+  },
+  "longos": {
+   "n": 82,
+   "com_duracao": 82,
+   "dur_mediana_s": 641.5,
+   "dur_p25_s": 503,
+   "dur_p75_s": 1056,
+   "views_mediana": 52000,
+   "views_max": 842000
+  },
+  "publicacao": {
+   "datas_analisadas": 17,
+   "dias_entre_posts_mediana": 2.0,
+   "mais_recente": "2026-10-16"
+  },
+  "titulos_curtos": {
+   "n": 102,
+   "caracteres_mediana": 60.5,
+   "pct_maioria_maiusculas": 44,
+   "pct_emoji": 25,
+   "pct_pergunta": 28,
+   "pct_exclamacao": 52,
+   "pct_numeros": 58,
+   "pct_hashtag": 59,
+   "palavras_frequentes": [
+    "gta",
+    "rockstar",
+    "gta6",
+    "gtavi",
+    "worldcup",
+    "argentina",
+    "playstation",
+    "wolverine",
+    "brazil",
+    "jones"
+   ]
+  },
+  "titulos_longos": {
+   "n": 82,
+   "caracteres_mediana": 50.0,
+   "pct_maioria_maiusculas": 78,
+   "pct_emoji": 4,
+   "pct_pergunta": 7,
+   "pct_exclamacao": 13,
+   "pct_numeros": 80,
+   "pct_hashtag": 0,
+   "palavras_frequentes": [
+    "gta",
+    "davy",
+    "jones",
+    "rockstar",
+    "reagindo",
+    "frame",
+    "trailer",
+    "sobre",
+    "new",
+    "igor"
+   ]
+  },
+  "fala": {
+   "curtos_medidos": 5,
+   "longos_medidos": 3,
+   "ppm_curtos_mediana": 234.2,
+   "ppm_longos_mediana": 205.7,
+   "palavras_3s_curtos_mediana": 13,
+   "primeira_fala_s_curtos_mediana": 0.12
+  },
+  "capitulos": {
+   "longos_analisados": 12,
+   "pct_com_capitulos": 25,
+   "capitulos_mediana": 5
+  },
+  "visual": {
+   "metodo": "diferença entre quadros a cada 0,25 s no navegador (sem baixar), 16/10/2026",
+   "amostra": [
+    "Q53IKQ5fD08 (23 s, gameplay+narração): 39 cortes/min",
+    "6HAUTuP7NZ4 (22 s, notícia GTA 6): 64 cortes/min",
+    "y8QSlUdBHH8 (87 s, opinião com rosto): 0 cortes — câmera fixa"
+   ],
+   "cortes_por_min_curtos": 51,
+   "layout_curtos": "tela_cheia",
+   "legenda_curtos": "palavra",
+   "notas": [
+    "Shorts de jogo/notícia: corte a cada ~1–1,5 s, tela cheia, legenda de 1–3 palavras com palavra-chave colorida.",
+    "Shorts de opinião usam o rosto do criador em cima e um cartão da notícia embaixo (formato que depende de aparecer).",
+    "Amostra pequena (3 vídeos): trate como indicação, não como regra."
+   ]
+  }
+ },
+ "derivado": {
+  "curto": {
+   "duracao_alvo": 25,
+   "palavras_por_minuto": 234.2,
+   "palavras_nos_3s": 13,
+   "max_cena": 1.2,
+   "layout": "tela_cheia",
+   "legenda": "palavra"
+  },
+  "longo": {
+   "duracao_alvo": 642,
+   "palavras_por_minuto": 205.7,
+   "capitulos": false
+  },
+  "titulo": {
+   "curto": {
+    "max_caracteres": 69,
+    "maiusculas": false,
+    "emoji": false
+   },
+   "longo": {
+    "max_caracteres": 57,
+    "maiusculas": true,
+    "emoji": false
+   }
+  }
+ },
+ "limitacoes": [
+  "Amostra das abas públicas (até 60 por aba) e detalhes de até ~26 vídeos.",
+  "Views variam com o tempo; os números são do dia da coleta.",
+  "Legendas automáticas erram palavras; servem só para medir ritmo.",
+  "O perfil descreve técnica de edição. Não copie roteiros, falas, vinhetas ou a identidade do criador."
+ ]
+}

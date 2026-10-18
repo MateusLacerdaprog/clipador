@@ -1,0 +1,3 @@
+﻿Fonte: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (zip do main, 18/10/2026, SHA-256 D3F2B5C8D56B1947F07BB2F5BF0B10C27430FC75CAE7246DB2728CEAE5EC10A4).
+So a skill ui-ux-pro-max (busca local em CSV, sem rede); sem a pasta tests. Ajuste: caminho ${CLAUDE_PLUGIN_ROOT}/.claude/skills/... trocado por .claude/skills/... (instalada como skill, nao plugin).
+Ficaram de fora: banner-design, brand, design (gera imagem por servicos pagos), design-system, slides, ui-styling e a CLI.

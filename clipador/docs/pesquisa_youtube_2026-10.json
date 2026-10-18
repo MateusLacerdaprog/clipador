@@ -1,0 +1,423 @@
+{
+ "coletado_em": "2026-10-17",
+ "metodo": "yt-dlp metadados publicos; ~60 videos mais recentes da aba Videos; detalhes (data, capitulos) dos 5 longos mais vistos dessa amostra",
+ "canais": {
+  "SaninPlay": {
+   "handle": "@SaninPlay",
+   "inscritos": 1350000,
+   "amostra": 60,
+   "longos_na_amostra": 59,
+   "mediana_views_longos": 61000,
+   "mediana_duracao_longos_min": 13.7,
+   "mediana_views_curtos_8min": 63000,
+   "top": [
+    {
+     "titulo": "AGORA SABEMOS o TAMANHO do MAPA do GTA 6… E É ABSURDO! (Veja!) #gta6",
+     "url": "https://www.youtube.com/watch?v=iJdHE1H3KAo",
+     "views": 237255,
+     "duracao_min": 35.4,
+     "publicado": "2026-10-03",
+     "views_por_dia": 16946,
+     "capitulos": [
+      "Introdução",
+      "Abertura",
+      "AD #M4FIACLUB",
+      "Como a comunidade reconstruiu o mapa",
+      "CyberLeek revelou o mapa e sua topografia",
+      "Código-fonte antigo do GTA 6 vazou",
+      "A região que foi removida do mapa",
+      "Três cidades foram cortadas do GTA 6",
+      "Cayo Perico originalmente pertencia ao GTA 6",
+      "A gigantesca ilha baseada em Porto Rico",
+      "Novas localizações descobertas no mapa",
+      "A versão mais atualizada do mapa do GTA 6"
+     ],
+     "likes": 5729,
+     "comentarios": 223
+    },
+    {
+     "titulo": "GTA 6: 155 DETALHES ABSURDOS REVELADOS pela ROCKSTAR! (Veja Todos) #gta6",
+     "url": "https://www.youtube.com/watch?v=FTFTVGmDKiM",
+     "views": 193515,
+     "duracao_min": 29.1,
+     "publicado": "2026-08-31",
+     "views_por_dia": 4117,
+     "capitulos": [
+      "Introdução",
+      "Abertura",
+      "Detalhes exclusivos revelados secretamente na Rockstar North..",
+      "O GTA 6 quase teve 4 protagonistas...",
+      "Como vai funcionar a troca entre Jason e Lúcia no mundo aberto..",
+      "O relacionamento do Jason e da Lúcia não é obrigatório...",
+      "O modo história será dividido em capítulos..",
+      "A conexão surreal entre as missões e o mundo aberto..",
+      "As rotinas individuais e os esconderijos no jogo..",
+      "O verdadeiro tamanho do mapa do GTA 6 revelado!",
+      "O salto insano de 600 mil animações dos NPCs...",
+      "Como vai funcionar o celular e as redes sociais no GTA 6.."
+     ],
+     "likes": 6811,
+     "comentarios": 427
+    },
+    {
+     "titulo": "GTA 6: MEGA ANÁLISE do TRAILER ESTENDIDO: +617 Detalhes Revelados! (Veja Todos) #gta6",
+     "url": "https://www.youtube.com/watch?v=LGgb1JnkaO0",
+     "views": 152515,
+     "duracao_min": 149.2,
+     "publicado": "2026-09-07",
+     "views_por_dia": 3812,
+     "capitulos": [
+      "Introdução",
+      "Intro",
+      "A piada da Rockstar com os fãs",
+      "A nova Iluminação realista do GTA 6",
+      "A empresa Postal de volta",
+      "O segredo bizarro da música do Trailer",
+      "A Teoria dos Pássaros no GTA 6",
+      "Oficina mecânica e Ambientação",
+      "Novas marcas e o Venture Apartment",
+      "Os grafites feitos por artistas de rua reais",
+      "A nova inteligência artificial dos NPCs",
+      "A cena do Trailer 2 por outro ângulo"
+     ],
+     "likes": 6451,
+     "comentarios": 510
+    },
+    {
+     "titulo": "🚨VAZAMENTO MASSIVO do GTA 6! - 192 GB DE ARQUIVOS + DLCs CANCELADOS DO GTA 5 (Gigante) #gta6",
+     "url": "https://www.youtube.com/watch?v=yoIdMf6NEEU",
+     "views": 140784,
+     "duracao_min": 11.9,
+     "publicado": "2026-09-19",
+     "views_por_dia": 5028,
+     "capitulos": [
+      "Introdução",
+      "Abertura",
+      "O histórico de vazamentos da Rockstar Games",
+      "As DLCs canceladas do GTA V (Liberty City e Agent Trevor)",
+      "Detalhes insanos da DLC Agent Trevor",
+      "O mapa antigo do GTA 6 de 2015",
+      "O prédio Skyrise Miami e os recortes do mapa",
+      "O Projeto América, Porto Rico e ilhas cortadas",
+      "A base espacial da NASA e construções em Leonida",
+      "O perigo do código fonte: GTA 6 rodando no GTA V",
+      "As consequências e o impacto desses vazamentos",
+      "Conclusão"
+     ],
+     "likes": 3878,
+     "comentarios": 179
+    },
+    {
+     "titulo": "🚨URGENTE! Rockstar FALA pela PRIMEIRA VEZ sobre o Vazamento... - Sites do Leaker DERRUBADOS! #gta6",
+     "url": "https://www.youtube.com/watch?v=2H0vmMRKB8E",
+     "views": 136648,
+     "duracao_min": 12.7,
+     "publicado": "2026-08-22",
+     "views_por_dia": 2440,
+     "capitulos": [
+      "Introdução",
+      "Intro",
+      "A primeira declaração oficial da Rockstar Games",
+      "O modo história do GTA 6 não vazou?",
+      "A investigação da Rockstar Games contra os hackers",
+      "Como ele monetizou o vazamento do GTA 6..",
+      "A petição da Rockstar contra a Microsoft e Discord",
+      "Um novo grupo de hackers teve acesso ao GTA 6..",
+      "Como eles invadiram a Rockstar Índia...",
+      "O Youtuber que foi investigado pela Rockstar Games",
+      "O Leaker do GTA 6 foi preso? Site e Telegram derrubados",
+      "Os próximos vazamentos que podem acontecer..."
+     ],
+     "likes": 8376,
+     "comentarios": 781
+    }
+   ]
+  },
+  "AuthenticGames": {
+   "handle": "@AuthenticGames",
+   "inscritos": 20200000,
+   "amostra": 60,
+   "longos_na_amostra": 51,
+   "mediana_views_longos": 75000,
+   "mediana_duracao_longos_min": 10.1,
+   "mediana_views_curtos_8min": 44000,
+   "top": [
+    {
+     "titulo": "🌍 VOLTEI NO MEU MUNDO DE MINECRAFT SURVIVAL DEPOIS DE ANOS",
+     "url": "https://www.youtube.com/watch?v=ihSuh79z4mc",
+     "views": 628495,
+     "duracao_min": 8.3,
+     "publicado": "2024-09-13",
+     "views_por_dia": 822,
+     "capitulos": [],
+     "likes": 36486,
+     "comentarios": 1600
+    },
+    {
+     "titulo": "🧟 ESCOLA MONSTRO & PERDIDOS EP.10 - MINECRAFT",
+     "url": "https://www.youtube.com/watch?v=mr-LJM6FUks",
+     "views": 601316,
+     "duracao_min": 9.5,
+     "publicado": "2024-04-09",
+     "views_por_dia": 652,
+     "capitulos": [],
+     "likes": 47849,
+     "comentarios": 3500
+    },
+    {
+     "titulo": "ENFRENTEI O ELDER GUARDIAN, O WITHER E O WARDEN em 1 ÚNICO VÍDEO! 😅",
+     "url": "https://www.youtube.com/watch?v=bdEusivB840",
+     "views": 588637,
+     "duracao_min": 16.6,
+     "publicado": "2025-03-07",
+     "views_por_dia": 999,
+     "capitulos": [
+      "The video starts… and it already deserves a LIKE, right?",
+      "WHOA! Haven’t subscribed yet? This is your chance!",
+      "COMMENT BELOW: What would you do in this situation?",
+      "Only the real ones will drop a like now! Are you one of them?",
+      "Subscribe NOW! I promise the button doesn’t bite… (or does it? 😳😂)",
+      "END OF VIDEO! But hey… clicked on another one yet? GO GO GO!"
+     ],
+     "likes": 22819,
+     "comentarios": 3700
+    },
+    {
+     "titulo": "THE SIMS CRAFT 10 ANOS DEPOIS… 😱",
+     "url": "https://www.youtube.com/watch?v=JzEE1WhqIoA",
+     "views": 454895,
+     "duracao_min": 9.7,
+     "publicado": "2024-07-19",
+     "views_por_dia": 554,
+     "capitulos": [],
+     "likes": 29267,
+     "comentarios": 1600
+    },
+    {
+     "titulo": "MEU AMIGO visitou MEU MUNDO de MINECRAFT! @spok",
+     "url": "https://www.youtube.com/watch?v=o376MSUSD9I",
+     "views": 439723,
+     "duracao_min": 14.1,
+     "publicado": "2023-11-20",
+     "views_por_dia": 414,
+     "capitulos": [],
+     "likes": 19650,
+     "comentarios": 1700
+    }
+   ]
+  },
+  "Jazzghost": {
+   "handle": "@Jazzghost",
+   "inscritos": 25000000,
+   "amostra": 60,
+   "longos_na_amostra": 59,
+   "mediana_views_longos": 2800000,
+   "mediana_duracao_longos_min": 38.6,
+   "mediana_views_curtos_8min": 2700000,
+   "top": [
+    {
+     "titulo": "GODZILLA BLOODBATH VS SUNMAN NO MINECRAFT!",
+     "url": "https://www.youtube.com/watch?v=QuM3TA00YLU",
+     "views": 6388448,
+     "duracao_min": 43.6,
+     "publicado": "2026-09-21",
+     "views_por_dia": 245709,
+     "capitulos": [],
+     "likes": 150597,
+     "comentarios": 6100
+    },
+    {
+     "titulo": "EU SÓ QUERIA VENDER SANDUÍCHE MAS O MASCOTE DA JEGUE LANCHES QUER ME MATAR!",
+     "url": "https://www.youtube.com/watch?v=okviN9qLSIY",
+     "views": 6035745,
+     "duracao_min": 72.8,
+     "publicado": "2026-09-19",
+     "views_por_dia": 215562,
+     "capitulos": [],
+     "likes": 148455,
+     "comentarios": 6000
+    },
+    {
+     "titulo": "TÁ CALOR ENTÃO EU FUI PRA PISCINA, MAS EU ACHO QUE TEM ALGUMA COISA ERRADA COM ELA!",
+     "url": "https://www.youtube.com/watch?v=li1Sxe9xuzI",
+     "views": 4712985,
+     "duracao_min": 42.8,
+     "publicado": "2026-09-30",
+     "views_por_dia": 277234,
+     "capitulos": [],
+     "likes": 118742,
+     "comentarios": 5000
+    },
+    {
+     "titulo": "VIDA REAL: ELA SÓ FOI FAZER COMPRAS NO MERCADO E AGORA TEM UM LOUCO ATRÁS DELA!",
+     "url": "https://www.youtube.com/watch?v=ke_y4SVbZD4",
+     "views": 4717674,
+     "duracao_min": 64.7,
+     "publicado": "2026-08-15",
+     "views_por_dia": 74883,
+     "capitulos": [],
+     "likes": 130197,
+     "comentarios": 5800
+    },
+    {
+     "titulo": "TÁ CALOR, ENTÃO EU COMECEI A VENDER SORVETE... DE MADRUGADA!",
+     "url": "https://www.youtube.com/watch?v=7K3S5u_8M8k",
+     "views": 4637709,
+     "duracao_min": 79.2,
+     "publicado": "2026-10-03",
+     "views_por_dia": 331264,
+     "capitulos": [],
+     "likes": 133071,
+     "comentarios": 7300
+    }
+   ]
+  },
+  "SSundee": {
+   "handle": "@SSundee",
+   "inscritos": 25500000,
+   "amostra": 60,
+   "longos_na_amostra": 59,
+   "mediana_views_longos": 653000,
+   "mediana_duracao_longos_min": 20.0,
+   "mediana_views_curtos_8min": 949000,
+   "top": [
+    {
+     "titulo": "A NEW BEGINNING - Minecraft Modded SkyFactory 7",
+     "url": "https://www.youtube.com/watch?v=DLwiQdy-Q9g",
+     "views": 4346475,
+     "duracao_min": 30.0,
+     "publicado": "2026-09-13",
+     "views_por_dia": 127837,
+     "capitulos": [],
+     "likes": 247294,
+     "comentarios": 13000
+    },
+    {
+     "titulo": "We Brought Back Lucky Blocks in Minecraft!",
+     "url": "https://www.youtube.com/watch?v=Mzf8Y7rc6xs",
+     "views": 3567664,
+     "duracao_min": 19.3,
+     "publicado": "2026-09-06",
+     "views_por_dia": 87016,
+     "capitulos": [],
+     "likes": 219922,
+     "comentarios": 13000
+    },
+    {
+     "titulo": "MORE OG Minecraft Lucky Blocks",
+     "url": "https://www.youtube.com/watch?v=j0MF8hE1u7M",
+     "views": 1524021,
+     "duracao_min": 20.5,
+     "publicado": "2026-09-17",
+     "views_por_dia": 50800,
+     "capitulos": [],
+     "likes": 86114,
+     "comentarios": 2400
+    },
+    {
+     "titulo": "VERITY Mutated!",
+     "url": "https://www.youtube.com/watch?v=aR5LzJgLaXw",
+     "views": 1217242,
+     "duracao_min": 24.6,
+     "publicado": "2026-08-27",
+     "views_por_dia": 23867,
+     "capitulos": [],
+     "likes": 13864,
+     "comentarios": 794
+    },
+    {
+     "titulo": "I Made EVERYTHING a GUN in Minecraft",
+     "url": "https://www.youtube.com/watch?v=EkeNjAq89r8",
+     "views": 1144336,
+     "duracao_min": 21.8,
+     "publicado": "2026-09-09",
+     "views_por_dia": 30114,
+     "capitulos": [],
+     "likes": 18774,
+     "comentarios": 642
+    }
+   ]
+  },
+  "MrBeast Gaming": {
+   "handle": "@MrBeastGaming",
+   "inscritos": 60700000,
+   "amostra": 60,
+   "longos_na_amostra": 60,
+   "mediana_views_longos": 51000000,
+   "mediana_duracao_longos_min": 17.0,
+   "mediana_views_curtos_8min": null,
+   "top": [
+    {
+     "titulo": "1,000 Tanks Vs Titan Enderman!",
+     "url": "https://www.youtube.com/watch?v=IyEBRZsLZc8",
+     "views": 169934510,
+     "duracao_min": 10.9,
+     "publicado": "2022-03-05",
+     "views_por_dia": 100731,
+     "capitulos": [],
+     "likes": 2140817,
+     "comentarios": 61000
+    },
+    {
+     "titulo": "World's Largest Experiment!",
+     "url": "https://www.youtube.com/watch?v=JeTkMdw6RK8",
+     "views": 147415058,
+     "duracao_min": 10.5,
+     "publicado": "2022-05-22",
+     "views_por_dia": 91619,
+     "capitulos": [],
+     "likes": 1489589,
+     "comentarios": 23000
+    },
+    {
+     "titulo": "100 Assassins vs 10 Real Cops!",
+     "url": "https://www.youtube.com/watch?v=ilS38Z0vysA",
+     "views": 139705631,
+     "duracao_min": 8.6,
+     "publicado": "2023-04-05",
+     "views_por_dia": 108215,
+     "capitulos": [
+      "Preparing the defense",
+      "First wave of attacks",
+      "Escaping the observatory",
+      "Defending the bank",
+      "Final stand at construction"
+     ],
+     "likes": 1452701,
+     "comentarios": 12000
+    },
+    {
+     "titulo": "World's Fastest Car!",
+     "url": "https://www.youtube.com/watch?v=nopEs-K4ExM",
+     "views": 123261036,
+     "duracao_min": 9.6,
+     "publicado": "2022-07-09",
+     "views_por_dia": 78962,
+     "capitulos": [],
+     "likes": 1250860,
+     "comentarios": 21000
+    },
+    {
+     "titulo": "If You Build It, I'll Pay For It!",
+     "url": "https://www.youtube.com/watch?v=RvYkeTmM1gc",
+     "views": 122133051,
+     "duracao_min": 11.7,
+     "publicado": "2022-12-31",
+     "views_por_dia": 88119,
+     "capitulos": [
+      "The 100 player challenge",
+      "Building time running out",
+      "Judging low budget builds",
+      "Judging $100 to $1k builds",
+      "Judging $5k builds",
+      "Judging $10k builds",
+      "Judging $100k builds",
+      "Final judging and winners"
+     ],
+     "likes": 1984416,
+     "comentarios": 33000
+    }
+   ]
+  }
+ }
+}

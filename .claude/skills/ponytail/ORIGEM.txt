@@ -1,0 +1,2 @@
+﻿Fonte: https://github.com/DietrichGebert/ponytail (MIT), zip do branch main baixado em 18/10/2026, SHA-256 F3B63282FEE81A66D2CB3A9F51C9EED9DA6E35DB814DB749AE6DF8FD4F30366B, plugin v5.3.2.
+Instaladas so as 6 skills (SKILL.md). Ficaram de fora: hooks em JS (ativacao automatica, rastreio de modo, faixa/band de custo e tokens, planilha em ~/.config/ponytail e webhook opcional), scripts e pacote npm.
