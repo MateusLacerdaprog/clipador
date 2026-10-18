@@ -59,7 +59,7 @@ class Clipador:
         return {"projeto": nome, "rascunho": os.path.join(_pasta(nome), arq), "problemas": itens}
 
     def montar(self, nome, fonte, formato=None, tipo="curto", layout=None, trechos=None, pedido=None,
-               duracao=None, kit=None, referencia=None):
+               duracao=None, kit=None, referencia=None, direitos=None):
         perfil = None
         if referencia:                      # erro de nome antes de criar qualquer coisa
             perfil = self._req("GET", f"/api/referencias/{referencia}")
@@ -78,6 +78,8 @@ class Clipador:
                 raise ErroAutomacao(f"vídeo não encontrado: {fonte}")
             t = self._req("POST", f"{b}/fontes/caminho", json={"caminho": os.path.abspath(fonte)})
         fid = self._esperar(t, "vídeo")["fonte"]
+        if direitos:                                   # origem/licenca do video (docs/cpv/04)
+            self._req("PUT", f"{b}/fontes/{fid}/direitos", json=direitos)
         if layout:
             self._req("PUT", b, json={"layout": layout})
         if trechos:
@@ -185,6 +187,10 @@ def main(argv):
     m.add_argument("--duracao", type=float, default=None,
                    help="duração do momento procurado, em segundos (padrão: a da referência, ou 20)")
     m.add_argument("--referencia", default=None, help="perfil de referência (python -m clipador referencia NOME)")
+    m.add_argument("--origem", default=None, choices=("proprio", "licenciado", "dominio_publico", "terceiros"),
+                   help="origem do vídeo-fonte (registro de direitos)")
+    m.add_argument("--licenca", default="", help="licença do vídeo-fonte (obrigatória para licenciado/domínio público)")
+    m.add_argument("--link-licenca", default="", help="link da licença ou da fonte")
     g = m.add_mutually_exclusive_group()
     g.add_argument("--trechos", type=_trechos, help="início-fim em segundos, separados por vírgula: 14-20,31.5-36")
     g.add_argument("--pedido", help="trecho pelo que é dito no vídeo (busca local na transcrição)")
@@ -202,8 +208,9 @@ def main(argv):
             return 0
         c = Clipador()
         if a.cmd == "montar":
+            dir_ = {"origem": a.origem, "licenca": a.licenca, "link": a.link_licenca} if a.origem else None
             r = c.montar(a.nome, a.fonte, a.formato, a.tipo, a.layout, a.trechos, a.pedido, a.duracao, a.kit,
-                         a.referencia)
+                         a.referencia, dir_)
         else:
             r = c.finalizar(a.nome, a.narracao, a.modelo)
     except ErroAutomacao as e:

@@ -12,6 +12,7 @@ function renderFontes() {
         <button data-salvar-crop="${f.id}">Salvar</button>
         <button data-remover="${f.id}">Remover</button>
       </div>
+      ${direitosFonte(f)}
       <div class="dica">${esc(f.caminho)}</div>
     </div>`).join("") || `<p class="dica">Nenhum vídeo ainda.</p>`;
   renderComparacao();
@@ -171,6 +172,29 @@ $("#cmp-tocar").onclick = () => tentar(async () => {
   const vigia = () => { if (!cmpParar) return; if (va.currentTime >= iniA + dur || performance.now() - t0 > (dur + 1) * 1000) { cmpParar(); return; } requestAnimationFrame(vigia); };
   cmpParar = () => { va.pause(); vb.pause(); va.muted = vb.muted = true; cmpParar = null; $("#cmp-tocar").textContent = "▶ Ver lado a lado"; };
   requestAnimationFrame(vigia);
+});
+// origem e licenca do video (docs/cpv/04): salva na hora; nao muda o video nem a aprovacao
+const ORIGENS_MIDIA = { proprio: "Próprio (gravado/criado por mim)", licenciado: "Licenciado", dominio_publico: "Domínio público / licença livre",
+  terceiros: "De terceiros, sem licença", nao_informado: "Não informado" };
+function direitosFonte(f) {
+  const d = f.direitos || {}, alerta = ["terceiros", "nao_informado"].includes(d.origem || "nao_informado");
+  return `<fieldset class="decl" data-direitos="${f.id}"><legend>Direitos deste vídeo${alerta ? " ⚠ precisa de comentário/transformação ou licença" : ""}</legend>
+    <div class="linha">
+      <label class="bloco cresce">Origem <select data-dir-campo="origem">${Object.entries(ORIGENS_MIDIA).map(([k, v]) =>
+        `<option value="${k}" ${k === (d.origem || "nao_informado") ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+      <label class="bloco cresce">Licença <input data-dir-campo="licenca" maxlength="200" value="${esc(d.licenca || "")}" placeholder="ex.: Natural Earth, domínio público"></label>
+      <label class="bloco cresce">Link da licença/fonte <input data-dir-campo="link" maxlength="500" value="${esc(d.link || "")}" placeholder="https://"></label>
+    </div></fieldset>`;
+}
+$("#lista-fontes").addEventListener("change", (e) => {
+  const caixa = e.target.closest("[data-direitos]");
+  if (!caixa || !e.target.dataset.dirCampo) return;
+  const dados = Object.fromEntries($$(`[data-direitos="${caixa.dataset.direitos}"] [data-dir-campo]`).map((el) => [el.dataset.dirCampo, el.value]));
+  if (["licenciado", "dominio_publico"].includes(dados.origem) && !dados.licenca.trim()) {
+    caixa.querySelector('[data-dir-campo="licenca"]').focus();
+    return aviso("Escreva qual é a licença (ex.: “YouTube Audio Library”); salvo assim que você preencher.");
+  }
+  tentar(async () => { P = await api("PUT", `${base()}/fontes/${caixa.dataset.direitos}/direitos`, dados); renderTudo(); aviso("Direitos do vídeo salvos."); });
 });
 $("#lista-fontes").onclick = (e) => tentar(async () => {
   const id = e.target.dataset.salvarCrop || e.target.dataset.remover;

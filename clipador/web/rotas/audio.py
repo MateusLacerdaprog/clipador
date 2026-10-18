@@ -6,7 +6,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from ...core import midia, projeto, render, tarefas
+from ...core import midia, projeto, recursos, render, tarefas
 from ..comum import _carregar, _estado, _nome_livre
 from .fontes import Url
 
@@ -68,15 +68,29 @@ def _arq_biblio(tipo, nome):
     return c
 
 
-def _info_biblio(tipo, nome):
+def _info_biblio(tipo, nome, direitos=None):
     c = projeto.caminho_biblioteca(tipo, nome)
-    return {"nome": nome, "dur": round(midia.duracao(c), 2), "mb": round(os.path.getsize(c) / 1e6, 2)}
+    d = (direitos if direitos is not None else recursos.biblioteca_ler(projeto.BIBLIOTECAS[tipo])).get(nome)
+    return {"nome": nome, "dur": round(midia.duracao(c), 2), "mb": round(os.path.getsize(c) / 1e6, 2),
+            "direitos": recursos.completar(d)}
 
 
 @router.get("/api/biblioteca/{tipo}")
 def biblioteca_listar(tipo: str):
     pasta = _tipo(tipo)
-    return [_info_biblio(tipo, f) for f in sorted(os.listdir(pasta)) if f.lower().endswith(projeto.AUDIO_EXT)]
+    direitos = recursos.biblioteca_ler(pasta)
+    return [_info_biblio(tipo, f, direitos) for f in sorted(os.listdir(pasta)) if f.lower().endswith(projeto.AUDIO_EXT)]
+
+
+@router.put("/api/biblioteca/{tipo}/{nome}/direitos")
+def biblioteca_direitos(tipo: str, nome: str, dados: dict):
+    """Origem e licenca de uma musica/efeito da biblioteca (ex.: YouTube Audio Library, CC0, comprada)."""
+    pasta = _tipo(tipo)
+    _arq_biblio(tipo, nome)
+    try:
+        return {"nome": nome, "direitos": recursos.biblioteca_gravar(pasta, nome, dados)}
+    except ValueError as e:
+        raise HTTPException(400, str(e))
 
 
 @router.get("/api/biblioteca/{tipo}/{nome}/arquivo")

@@ -7,7 +7,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from ...core import destaques, midia, pedido, projeto, render, tarefas
+from ...core import destaques, midia, pedido, projeto, recursos, render, tarefas
 from ...core.ia import assistente, config as ia_config
 from ..comum import _carregar, _estado, _f, _fonte_ou_404, _nome_livre, _sinais, _validar_segmentos, VIDEO_EXT
 
@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 # ---------------------------------------------------------------------- fontes
-def _registrar_fonte(nome, caminho, progresso):
+def _registrar_fonte(nome, caminho, progresso, direitos=None):
     progresso(0.05, "lendo o video")
     inf = midia.info(caminho)
     progresso(0.15, "procurando tarjas pretas")
@@ -31,7 +31,7 @@ def _registrar_fonte(nome, caminho, progresso):
             c["miniatura"] = os.path.relpath(arq, projeto.pasta(nome)).replace("\\", "/")
     def incluir(p):
         p["fontes"].append({"id": fid, "caminho": os.path.abspath(caminho), "nome": os.path.basename(caminho),
-                            "info": inf, "crop": crop, "cenas": cs})
+                            "info": inf, "crop": crop, "cenas": cs, "direitos": recursos.completar(direitos)})
         if p.get("layout") == "comparacao":       # comparacao: o 1o video vira o A (em cima), o 2o o B (embaixo)
             for k in ("fonte_a", "fonte_b"):
                 if not p["comparacao"].get(k):
@@ -90,7 +90,9 @@ def _baixar(nome, url, progresso):
         caminho = y.prepare_filename(info)
     if not os.path.isfile(caminho):
         caminho = os.path.splitext(caminho)[0] + ".mp4"
-    return _registrar_fonte(nome, caminho, lambda f, m=None: progresso(0.5 + f / 2, m))
+    # baixado de um link: de terceiros ate o usuario dizer o contrario (registro de direitos, docs/cpv/04)
+    direitos = recursos.validar({"origem": "terceiros", "link": url, "obs": "baixado de um link; confirme a licença"})
+    return _registrar_fonte(nome, caminho, lambda f, m=None: progresso(0.5 + f / 2, m), direitos)
 
 
 @router.post("/api/projetos/{nome}/fontes/url")
@@ -99,6 +101,18 @@ def fonte_url(nome: str, dados: Url):
     if not dados.url.startswith(("http://", "https://")):
         raise HTTPException(400, "link invalido")
     return tarefas.iniciar("fonte", _baixar, nome, dados.url.strip())
+
+
+@router.put("/api/projetos/{nome}/fontes/{fid}/direitos")
+def fonte_direitos(nome: str, fid: str, dados: dict):
+    """Origem e licenca do video-fonte (proprio, licenciado, dominio publico, terceiros). Nao muda o video."""
+    if not any(f["id"] == fid for f in _carregar(nome)["fontes"]):   # arquivo sumido nao impede registrar a licenca
+        raise HTTPException(404, "fonte nao existe")
+    try:
+        d = recursos.validar(dados)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    return _estado(projeto.alterar(nome, lambda p: projeto.fonte(p, fid).update(direitos=d)))
 
 
 @router.delete("/api/projetos/{nome}/fontes/{fid}")
