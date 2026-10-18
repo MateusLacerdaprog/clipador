@@ -1,5 +1,7 @@
 """Rotas do estúdio (docs/cpv): canais, banco de ideias com pontuação CPV e roteiros com aprovação."""
-from fastapi import APIRouter, HTTPException
+import os
+
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from ...core import canais, ideias, roteiros, tarefas
@@ -144,6 +146,74 @@ def roteiros_ia(rid: str):
 @router.post("/api/roteiros/{rid}/ia/aplicar")
 def roteiros_ia_aplicar(rid: str):
     return _com_checagem(_chamar(roteiros.aplicar_sugestao, rid))
+
+
+@router.get("/api/projetos/{nome}/esteira")
+def esteira_estado(nome: str):
+    from ...core import esteira, projeto
+    p = _chamar(projeto.carregar, nome)
+    return {**esteira.estado(p), "log": esteira.log(nome)[-50:]}
+
+
+class Publicado(BaseModel):
+    url: str
+
+
+@router.post("/api/projetos/{nome}/esteira/publicado")
+def esteira_publicado(nome: str, dados: Publicado):
+    """O USUÁRIO publicou e informa o link; o Clipador não publica."""
+    from ...core import esteira
+    return _chamar(esteira.marcar_publicado, nome, dados.url)
+
+
+@router.post("/api/metricas/importar")
+async def metricas_importar(arquivo: UploadFile = File(...), canal: str | None = None):
+    from ...core import metricas
+    texto = (await arquivo.read()).decode("utf-8-sig", errors="replace")
+    linhas, desconhecidas = _chamar(metricas.ler_csv, texto)
+    snap = metricas.gravar_retrato(linhas, desconhecidas, os.path.basename(arquivo.filename or ""), canal)
+    return {"id": snap["id"], "videos": len(linhas), "colunas_nao_reconhecidas": desconhecidas}
+
+
+@router.get("/api/metricas/{video_id}")
+def metricas_video(video_id: str):
+    from ...core import metricas
+    return [{"importado_em": q, **l} for q, l in metricas.serie(video_id)]
+
+
+@router.post("/api/experimentos")
+def experimentos_criar(dados: dict):
+    from ...core import experimentos
+    return _chamar(experimentos.criar, dados)
+
+
+class Ligacao(BaseModel):
+    variante: str
+    video_id: str
+
+
+@router.post("/api/experimentos/{eid}/ligar")
+def experimentos_ligar(eid: str, dados: Ligacao):
+    from ...core import experimentos
+    return _chamar(experimentos.ligar, eid, dados.variante, dados.video_id)
+
+
+@router.get("/api/experimentos/{eid}/analise")
+def experimentos_analise(eid: str):
+    from ...core import experimentos
+    return _chamar(experimentos.analisar, eid)
+
+
+@router.post("/api/custos")
+def custos_lancar(dados: dict):
+    from ...core import financeiro
+    return _chamar(financeiro.lancar, dados)
+
+
+@router.get("/api/projetos/{nome}/financeiro")
+def financeiro_projeto(nome: str, valor_hora_usd: float | None = None):
+    from ...core import financeiro
+    return _chamar(financeiro.por_projeto, nome, valor_hora_usd)
 
 
 class RoteiroProjeto(BaseModel):

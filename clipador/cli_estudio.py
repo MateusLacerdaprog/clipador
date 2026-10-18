@@ -45,6 +45,52 @@ def _mostrar_roteiro(r):
     return "\n".join(linhas)
 
 
+def _outros(a):
+    from .core import esteira, experimentos, financeiro, metricas
+    if a.grupo == "esteira":
+        if a.publicado:
+            r = esteira.marcar_publicado(a.projeto, a.publicado)
+            print(f"publicação registrada: {r['url']}")
+        st = esteira.estado(projeto_carregar(a.projeto))
+        for e in st["etapas"]:
+            print(f"  {'✓' if e['ok'] else '→' if e['etapa'] == st['atual'] else ' '} {e['nome']}: {e['detalhe']}")
+    elif a.grupo == "metricas":
+        if a.acao == "importar":
+            s = metricas.importar(a.alvo, a.canal)
+            print(f"{len(s['linhas'])} vídeo(s) importado(s); colunas não reconhecidas: {', '.join(s['colunas_nao_reconhecidas']) or 'nenhuma'}")
+        else:
+            for quando, linha in metricas.serie(a.alvo):
+                print(quando, linha["metricas"])
+    elif a.grupo == "experimento":
+        if a.acao == "novo":
+            e = experimentos.criar({"hipotese": " ".join(a.args), "variavel": a.variavel, "metrica": a.metrica, "canal": a.canal})
+            print(f"experimento criado: {e['id']}")
+        elif a.acao == "ligar":
+            experimentos.ligar(a.args[0], a.args[1], a.args[2])
+            print("vídeo ligado")
+        else:
+            for k, v in experimentos.analisar(a.args[0]).items():
+                print(f"  {k}: {v}")
+    else:
+        if a.acao == "lancar":                      # custo lancar TIPO VALOR [PROJETO] [descrição...]
+            c = financeiro.lancar({"tipo": a.args[0], "valor": a.args[1], "projeto": a.args[2] if len(a.args) > 2 else None,
+                                   "descricao": " ".join(a.args[3:])})
+            print(f"lançado: {c['tipo']} {c['valor']}")
+        elif a.acao == "projeto":
+            for k, v in financeiro.por_projeto(a.args[0], a.valor_hora).items():
+                print(f"  {k}: {v}")
+        else:                                        # custo projecao VIEWS VIDEOS_MES RPM [PCT] [CUSTO_VIDEO] [FIXO]
+            n = [float(x) for x in a.args]
+            for k, v in financeiro.projecao(*n).items():
+                print(f"  {k}: {v}")
+    return 0
+
+
+def projeto_carregar(nome):
+    from .core import projeto
+    return projeto.carregar(nome)
+
+
 def main(argv):
     ap = argparse.ArgumentParser(prog="python -m clipador", description="Estúdio: canais, ideias CPV e roteiros")
     sub = ap.add_subparsers(dest="grupo", required=True)
@@ -64,8 +110,27 @@ def main(argv):
     r_ = sub.add_parser("roteiro")
     r_.add_argument("acao", choices=("novo", "ver", "bloco", "ganchos", "afirmacao", "aprovar", "projeto"))
     r_.add_argument("args", nargs="*")
+    e_ = sub.add_parser("esteira", help="etapas do projeto (deduzidas do estado real)")
+    e_.add_argument("projeto")
+    e_.add_argument("--publicado", help="link do vídeo que VOCÊ publicou")
+    m_ = sub.add_parser("metricas", help="importar o CSV do YouTube Studio")
+    m_.add_argument("acao", choices=("importar", "ver"))
+    m_.add_argument("alvo", help="caminho do CSV (importar) ou id do vídeo (ver)")
+    m_.add_argument("--canal")
+    x_ = sub.add_parser("experimento")
+    x_.add_argument("acao", choices=("novo", "ligar", "analisar"))
+    x_.add_argument("args", nargs="*")
+    x_.add_argument("--canal")
+    x_.add_argument("--variavel", default="gancho")
+    x_.add_argument("--metrica", default="views")
+    k_ = sub.add_parser("custo")
+    k_.add_argument("acao", choices=("lancar", "projeto", "projecao"))
+    k_.add_argument("args", nargs="*")
+    k_.add_argument("--valor-hora", type=float, default=None)
     a = ap.parse_args(argv)
     try:
+        if a.grupo in ("esteira", "metricas", "experimento", "custo"):
+            return _outros(a)
         if a.grupo == "canal":
             if a.acao == "semear":
                 print("criados:", ", ".join(x["id"] for x in canais.semear()) or "nenhum (já existiam)")
@@ -107,7 +172,7 @@ def main(argv):
             else:
                 p = roteiros.para_projeto(arg[0], arg[1])
                 print(f"projeto criado: {p['nome']} (roteiro no teleprompter da aba 5)")
-    except (ValueError, FileNotFoundError, FileExistsError, IndexError) as e:
+    except (ValueError, FileNotFoundError, FileExistsError, IndexError, RuntimeError) as e:
         print(f"Erro: {e}")
         return 1
     return 0
