@@ -208,6 +208,17 @@ Base: 13 skills de social media + recomendações do agente de produção. Detal
 - Testes: `tests/test_automacao.py` (5, lentos; fala real pela voz pt-BR do Windows).
 - 📋 Remotion (skill instalada): fica para títulos/gráficos animados renderizados à parte e sobrepostos pelo FFmpeg; não substitui o render atual.
 
+## 17. Projeto mestre CPV — pesquisa, estratégia e estúdio (18/10/2026)
+Detalhes em `docs/cpv/01–10`. Pesquisa: 8 vídeos de ensino com transcrição (2 oficiais do YouTube), 49 Shorts ≥ 10 mi
+verificados (cortes e texto na tela medidos em cópias apagadas), 12 páginas oficiais de política, política da
+Take-Two (uso não comercial). Estratégia: 3 canais em português + canal 4 (GTA 6) sem receita até licença.
+- ✅ Git com identidade genérica; `requirements.txt` fixado (teste garante que todo import está lá).
+- ✅ Registro de direitos por mídia (`core/recursos.py`), conformidade com a regra de cada aviso (`core/conformidade.py`).
+- ✅ Estúdio: canais, ideias com pontuação CPV, roteiros com aprovação do usuário, originalidade, esteira de 12 etapas,
+  métricas pelo CSV do Studio, experimentos, finanças (observado × projeção). API + CLI.
+- 📋 Telas do estúdio no app (I15); gerador de mapas (I13, precisa de dados Natural Earth); validar o importador com um
+  CSV real do Studio; publicação via API (opcional, nunca automática).
+
 ## 6. Como executar e validar
 ```bash
 python -m clipador          # abre http://127.0.0.1:8765 (ou "Abrir Clipador.bat")
