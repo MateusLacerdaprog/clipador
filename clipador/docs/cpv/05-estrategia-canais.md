@@ -39,11 +39,19 @@ Take-Two — não por falta de demanda. Se o usuário quiser manter GTA 6, que s
 contar com receita** (uso de fã), com spoilers e cenas isoladas evitados, ou após pedido de licença ao
 copyright@take2games.com. Essa decisão é do usuário (risco jurídico/de remoção).
 
-**Idioma (para os três): inglês** — HIPÓTESE apoiada por: mercado de referência EUA; anunciantes e público dos
-EUA (RPM maior é **alegação** de criadores, não verificado aqui); na amostra (02), Shorts narrados em inglês têm
-mais likes e comentários por view. A hipótese será testada com o Analytics real (origem do público, RPM).
-**Condição prática:** a narração precisa ser **da voz do usuário** (em inglês) ou de um **clone da própria voz**
-(F4: clonar a própria voz não exige divulgação). Ver decisão pendente no relatório.
+**Idioma — DECISÃO DO USUÁRIO (18/10/2026): português, narrado pelo próprio usuário.** O mercado dos EUA fica
+como **referência de técnica** (estrutura, ritmo, formatos), e o público-alvo passa a ser **lusófono**
+(Brasil e Portugal). Consequências:
+- Temas adaptados ao público brasileiro (abaixo): mapas e curiosidades do Brasil e do mundo; história do Brasil e
+  do mundo; ciência/espaço.
+- **Receita por view:** criadores dizem que os Shorts no Brasil pagam bem menos que nos EUA (V3: ~R$ 0,15 contra
+  ~R$ 0,70–0,80 por mil views) — **ALEGADO, não verificado**; o Analytics real decide.
+- **Alavanca oficial para alcançar o inglês sem regravar:** a **dublagem automática** do YouTube dubla vídeos
+  com áudio original em português para **inglês e espanhol**, com revisão antes de publicar
+  (https://support.google.com/youtube/answer/15569972 — VERIFICADO 18/10/2026). Ficam fora vídeos sem fala,
+  com fala rápida demais ou com conteúdo protegido. **A página não diz se vale para Shorts** → testar nos vídeos
+  longos de cada canal (Fase 10).
+- Narração do próprio usuário = o caminho mais seguro contra "conteúdo inautêntico" (F1, V8).
 
 ---
 
@@ -129,6 +137,30 @@ mais likes e comentários por view. A hipótese será testada com o Analytics re
     sem errar); não usar logo da NASA.
 14. **Receita:** YPP, nível menor, patrocínios educativos, afiliados de telescópios/livros (divulgar parceria).
 15. **Critérios:** iguais ao canal 1.
+
+## Adaptação ao público lusófono (vale sobre os itens 3, 4 e 8 de cada canal acima)
+
+| Canal | Nome provisório (PT) | Público | Dez ideias em português (fatos a verificar com fonte antes do roteiro) |
+|---|---|---|---|
+| 1. Mapas | "Mapa Esquisito" | Brasil/Portugal, 14–44 | O ponto mais oriental das Américas (Ponta do Seixas, PB); a fronteira seca Brasil–Uruguai em Santana do Livramento/Rivera; por que o Acre "quase" não foi brasileiro; a Ilha da Trindade, longe de tudo; o Monte Roraima na tríplice fronteira; o Brasil sobre o mapa da Europa (escala); por que a Linha de Tordesilhas não bate com o mapa de hoje; o município maior que países (Altamira); fusos horários do Brasil e a hora de Fernando de Noronha; Groenlândia × África na projeção de Mercator (ângulo: Brasil × Rússia) |
+| 2. História | "História Esquisita" (Brasil e mundo) | Brasil/Portugal, 18–54 | A Revolta da Vacina (1904); a guerra da Cisplatina e a origem do Uruguai; quando o Rio foi capital de Portugal (1808–1821); a Revolta da Chibata (1910); o "Dia do Fico"; a estrada de ferro Madeira–Mamoré; a Coluna Prestes em mapa; a Guerra do Paraguai além dos livros (com cuidado F7); a enchente de melaço de Boston (1919); o "Grande Embuste da Lua" (1835) |
+| 3. Ciência/espaço | "Como o Espaço Funciona" | Brasil/Portugal, 13–44 (atenção COPPA) | Quantos nasceres do sol a ISS vê por dia; por que Marte é vermelho; a Voyager 1 ainda falando com a Terra; por que vemos sempre o mesmo lado da Lua; como um furacão se forma (NOAA); a densidade de Saturno (com a ressalva certa); o eclipse visto da ISS; por que o céu é azul (demonstração caseira); a que velocidade você se move agora; Sol × Terra em escala |
+
+Títulos/descrições em português, palavra-chave no começo; fontes na descrição; o texto final é do usuário.
+
+## Canal 4 — GTA 6 (separado, **aguardando licença da Take-Two**)
+
+Decisão do usuário (18/10/2026): GTA 6 vira **um 4º canal separado** e o projeto dos 3 canais segue.
+- **Situação de direitos:** a política da Take-Two (fato 3) só tolera uso **não comercial**. **Até haver
+  licença por escrito**, o canal 4 opera como uso de fã: **sem monetização** (anúncios, assinaturas,
+  patrocínio sobre o material), sem vazamentos pré-lançamento, sem cenas/cinemáticas isoladas, sem spoilers do
+  final, sem promover trapaça ou mods não autorizados.
+- **Pedido de licença:** rascunho em `rascunho-email-take-two.md` (o usuário revisa e envia para
+  copyright@take2games.com — o Clipador/Claude não envia mensagens).
+- **Formatos que já existem no Clipador:** comparação A×B, análise de trailer com narração, gameplay próprio a
+  partir de 19/11/2026.
+- **Se a licença vier:** registrar os termos exatos no registro de recursos (licença, escopo, prazo) e só então
+  ligar a monetização. **Se não vier ou não houver resposta:** manter sem receita ou encerrar — decisão do usuário.
 
 ## Capacidade (alerta)
 Três canais × 3 Shorts/semana = 9 Shorts/semana para **uma pessoa** que narra e revisa. Recomendo **começar com
