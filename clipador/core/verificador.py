@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 
-from . import audio, formatos, midia, projeto, react, timeline
+from . import audio, conformidade, formatos, midia, projeto, react, timeline
 
 MIN_CENA_PADRAO = 1.0      # plano mais curto que isso "pisca" (formatos podem pedir mais: comparacao 2,2 s)
 MAX_CENA_PADRAO = 4.0      # curto sem formato: trocar a imagem a cada 2-4 s
@@ -147,6 +147,7 @@ def verificar_projeto(p):
         itens.append(_item("aviso", "Tem narração mas não tem legenda", "", "Aba 6 · Textos → Transcrever (legendas aumentam a retenção)."))
     itens += [i for i in verificar_retencao(p, cart, total)
               if not (i["titulo"] == "Sem legenda" and narr)]          # sem legenda com narracao ja foi avisado acima
+    itens += conformidade.verificar(p)                                  # direitos, termos de risco, duplicado (docs/cpv/04)
     # react
     R = react.completar(p.get("react"))
     if R["ativo"]:
@@ -161,10 +162,10 @@ def verificar_projeto(p):
         if R["modo"] == "fundo_virtual" and not R["chroma"]["ativo"] and not R["recorte_ia"]["ativo"]:
             itens.append(_item("erro", "Fundo virtual sem recorte", "a câmera inteira cobriria o jogo",
                                "Ligue o chroma key ou o recorte por IA na aba React."))
-    if not [i for i in itens if i["nivel"] in ("erro", "aviso")]:       # dicas nao sao problema
-        itens.append(_item("ok", "Projeto sem problemas encontrados", f"{len(p['segmentos'])} trechos, {total:.1f} s"))
     ordem = {"erro": 0, "aviso": 1, "dica": 2, "ok": 3}
     itens.sort(key=lambda i: ordem[i["nivel"]])
+    if not [i for i in itens if i["nivel"] in ("erro", "aviso")]:       # dicas nao sao problema: o resumo abre a lista
+        itens.insert(0, _item("ok", "Projeto sem problemas encontrados", f"{len(p['segmentos'])} trechos, {total:.1f} s"))
     return itens
 
 

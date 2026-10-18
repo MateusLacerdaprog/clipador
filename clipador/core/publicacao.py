@@ -312,7 +312,8 @@ def markdown(p):
     for rede, nome in (("tiktok", "TikTok"), ("instagram", "Instagram Reels")):
         r = pub[rede]
         linhas += [f"## {nome}", "", (r["legenda"].rstrip() or "—") + (("\n\n" + " ".join(r["hashtags"])) if r["hashtags"] else ""), ""]
-    itens = [i for i in verificar(p) if i["nivel"] != "ok"]
+    from . import conformidade
+    itens = [i for i in verificar(p) + conformidade.verificar(p) if i["nivel"] != "ok"]
     linhas += ["## Verificação", ""] + ([f"- {'❌' if i['nivel'] == 'erro' else '⚠️' if i['nivel'] == 'aviso' else '💡'} "
                                            f"{i['titulo']}" + (f" — {i['como_resolver']}" if i["como_resolver"] else "") for i in itens]
                                           or ["- ✅ nada obrigatório faltando"])

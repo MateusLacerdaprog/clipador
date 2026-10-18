@@ -20,6 +20,7 @@ function renderItens(itens, el) {
   const ic = { erro: "❌", aviso: "⚠️", dica: "💡", ok: "✅" };
   el.innerHTML = (itens || []).map((i) => `<li class="${i.nivel}"><span aria-hidden="true">${ic[i.nivel]}</span> <b>${esc(i.titulo)}</b>`
     + `<span class="so-leitor">(${i.nivel})</span>${i.detalhe ? ` <span class="dica">${esc(i.detalhe)}</span>` : ""}`
+    + `${i.regra ? ` <span class="dica" title="regra oficial na matriz docs/cpv/04">· regra ${esc(i.regra)}</span>` : ""}`
     + `${i.como_resolver ? `<div class="dica">→ ${esc(i.como_resolver)}</div>` : ""}</li>`).join("");
 }
 function renderPlano() {
