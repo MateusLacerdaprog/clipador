@@ -95,6 +95,26 @@ def test_todo_import_relativo_resolve_inclusive_dentro_de_funcao():
     assert not quebrados, quebrados
 
 
+def test_todo_import_externo_esta_no_requirements():
+    """Reinstalar o PC tem de reproduzir o ambiente: nada importado pelo pacote/testes pode faltar no requirements.txt."""
+    import sys
+
+    nome_dist = {"cv2": "opencv-python", "yt_dlp": "yt-dlp", "faster_whisper": "faster-whisper", "google": "google-genai"}
+    with open(os.path.join(RAIZ, "requirements.txt"), encoding="utf-8") as f:
+        fixados = {linha.split("==")[0].strip().lower() for linha in f if "==" in linha}
+    externos = set()
+    for c in PY:
+        with open(c, encoding="utf-8") as f:
+            for n in ast.walk(ast.parse(f.read())):
+                if isinstance(n, ast.Import):
+                    externos |= {a.name.split(".")[0] for a in n.names}
+                elif isinstance(n, ast.ImportFrom) and not n.level and n.module:
+                    externos.add(n.module.split(".")[0])
+    externos -= set(sys.stdlib_module_names) | {"clipador", "conftest"}
+    faltando = sorted(m for m in externos if nome_dist.get(m, m).lower().replace("_", "-") not in fixados)
+    assert not faltando, f"faltam no requirements.txt: {faltando}"
+
+
 def test_nenhuma_funcao_python_definida_duas_vezes_no_mesmo_modulo():
     repetidas = []
     for c in PY:
