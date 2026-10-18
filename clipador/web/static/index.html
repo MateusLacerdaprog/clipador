@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clipador</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<a class="pular" href="#principal">Pular para o conteúdo</a>
+<aside id="lateral">
+  <h1>Clipador</h1>
+  <p class="sub">Vídeos de games, sem aparecer</p>
+  <nav class="areas" aria-label="Áreas">
+    <section class="area">
+      <div class="area-cab"><h2>📱 Vídeos curtos</h2><button class="mini" data-novo="curto" title="Novo Short / TikTok / Reels">+ Novo</button></div>
+      <p class="dica">Shorts · TikTok · Reels (9:16)</p>
+      <ul class="lista-projetos" data-tipo="curto"></ul>
+    </section>
+    <section class="area">
+      <div class="area-cab"><h2>🖥 Vídeos longos</h2><button class="mini" data-novo="longo" title="Novo vídeo longo do YouTube">+ Novo</button></div>
+      <p class="dica">YouTube 16:9 com capítulos</p>
+      <ul class="lista-projetos" data-tipo="longo"></ul>
+    </section>
+  </nav>
+  <div class="ferramentas-lateral">
+    <button id="abrir-ia" title="Configurar provedores de IA"><span aria-hidden="true">🤖</span> Provedores de IA</button>
+    <button id="abrir-ref" title="Perfis de referência editorial"><span aria-hidden="true">📚</span> Referências</button>
+    <button id="abrir-kits" title="Kits do canal e presets de zoom (edite sem abrir um projeto)"><span aria-hidden="true">🎨</span> Biblioteca de estilos</button>
+  </div>
+</aside>
+
+<dialog id="dlg-kits" aria-labelledby="dlg-kits-titulo">
+  <div class="dlg-topo"><h2 id="dlg-kits-titulo">Biblioteca de estilos</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <p class="dica">Um <b>kit</b> é o estilo do seu canal: legenda, layout, logo, tempo do gancho e um zoom padrão. Edite aqui sem abrir projeto;
+    os projetos que já usam o kit só mudam quando você aplicar de novo (aba 3 · Estilo).</p>
+  <div class="linha">
+    <label>Kit <select id="bk-sel"></select></label>
+    <button id="bk-novo" title="Kit com o estilo padrão de um projeto novo">+ Kit em branco</button>
+    <button id="bk-duplicar">Duplicar</button>
+    <button id="bk-excluir" class="mini">Excluir kit</button>
+  </div>
+  <form id="bk-form" class="cartao" hidden>
+    <div class="linha">
+      <label class="cresce">Nome <input id="bk-nome" maxlength="60" required class="cresce"></label>
+      <label>Layout (vídeo curto) <select id="bk-layout">
+        <option value="tela_cheia">Tela cheia</option><option value="empilhado">Empilhado</option><option value="comparacao">Comparação A × B</option></select></label>
+      <label>Gancho some aos <input id="bk-gancho" type="number" min="0" step="0.5" class="curto"> s</label>
+    </div>
+    <h3>Legenda</h3>
+    <div class="linha">
+      <select id="bk-leg-estilo" aria-label="Estilo da legenda do kit">
+        <option value="karaoke">Karaokê</option><option value="palavra">Palavra</option><option value="caixa">Caixa ([terceiro])</option></select>
+      <label><input id="bk-leg-maius" type="checkbox"> MAIÚSCULAS</label>
+      <label>Altura <input id="bk-leg-y" type="number" min="100" max="1800" class="curto" placeholder="auto"></label>
+      <label>Fonte <select id="bk-leg-fonte"></select></label>
+      <label>Tamanho <input id="bk-leg-tamanho" type="number" min="30" max="200" class="curto" placeholder="padrão"></label>
+    </div>
+    <div class="linha">
+      <label>Cor <input id="bk-leg-cor" type="color"></label>
+      <label>Destaque <input id="bk-leg-destaque" type="color"></label>
+      <label>Contorno <input id="bk-leg-contorno" type="number" min="0" max="20" class="curto" placeholder="padrão"></label>
+      <label>Sombra <input id="bk-leg-sombra" type="number" min="0" max="10" class="curto" placeholder="padrão"></label>
+      <label>Animação <select id="bk-leg-animacao"><option value="nenhuma">nenhuma</option><option value="pop">pop</option></select></label>
+    </div>
+    <h3>Logo</h3>
+    <div class="linha">
+      <label>Logo <select id="bk-marca-arquivo"></select></label>
+      <label>Canto <select id="bk-marca-pos">
+        <option value="sup_dir">superior direito</option><option value="sup_esq">superior esquerdo</option>
+        <option value="inf_dir">inferior direito</option><option value="inf_esq">inferior esquerdo</option></select></label>
+      <label>Tamanho <input type="range" id="bk-marca-tamanho" min="0.04" max="0.4" step="0.01"></label>
+      <label>Opacidade <input type="range" id="bk-marca-opacidade" min="0.1" max="1" step="0.05"></label>
+    </div>
+    <h3>Zoom padrão</h3>
+    <div class="linha">
+      <label>Zoom <select id="bk-zoom"></select></label>
+      <span id="bk-zoom-dica" class="dica"></span>
+    </div>
+    <p class="dica">Na aba Estilo, “Zoom do kit nos trechos sem zoom” coloca este zoom só onde ainda não há zoom (dá para desfazer).</p>
+    <div class="linha"><button id="bk-salvar" class="primario">Salvar kit</button><span id="bk-status" class="dica" aria-live="polite"></span></div>
+  </form>
+  <details class="cartao" id="bk-zoom-presets">
+    <summary><b>Presets de zoom</b></summary>
+    <p class="dica">Os 4 embutidos não mudam. Os seus aparecem no menu Zoom de cada trecho (aba Cortes) e no zoom padrão do kit.
+      Excluir um preset não muda nenhum vídeo: os trechos guardam os valores.</p>
+    <ul id="bk-zoom-lista" class="verif"></ul>
+    <h3>Novo preset</h3>
+    <div class="linha">
+      <label class="cresce">Nome <input id="bz-nome" maxlength="40" class="cresce" placeholder="ex.: Soco forte"></label>
+      <label>força <input id="bz-intensidade" type="number" min="1.05" max="2" step="0.05" value="1.3" class="curto"></label>
+      <label>começa em <input id="bz-inicio" type="number" min="0" step="0.1" value="0" class="curto"> s</label>
+      <label>leva <input id="bz-duracao" type="number" min="0" step="0.05" value="0.3" class="curto"> s</label>
+    </div>
+    <div class="linha">
+      <label>curva <select id="bz-curva"><option value="suave">suave</option><option value="rapida">rápida</option><option value="linear">constante</option></select></label>
+      <label><input id="bz-volta" type="checkbox"> volta ao normal</label>
+      <label>segura <input id="bz-segura" type="number" min="0" step="0.1" value="0" class="curto"> s</label>
+      <label class="cresce">dica <input id="bz-dica" maxlength="120" class="cresce" placeholder="quando usar"></label>
+      <button id="bz-salvar">Salvar preset de zoom</button>
+    </div>
+  </details>
+</dialog>
+
+<dialog id="dlg-ia" aria-labelledby="dlg-ia-titulo">
+  <div class="dlg-topo"><h2 id="dlg-ia-titulo">Provedores de IA</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <div class="aviso-info">
+    <b>Assinatura ≠ API.</b> Pagar o ChatGPT Plus, o Claude Pro ou o Gemini Advanced <u>não</u> dá acesso à API. A API é cobrada à parte, por uso:
+    crie uma chave no painel do provedor. A chave fica no <b>Gerenciador de Credenciais do Windows</b> e nunca aparece de novo na tela.
+    Só <b>texto</b> do projeto é enviado (roteiro, legenda, rótulos); vídeo e áudio nunca saem do seu PC. Sem IA, tudo continua funcionando à mão.
+  </div>
+  <div id="lista-provedores"></div>
+  <div class="duas-colunas">
+    <div class="cartao">
+      <h3>Limites</h3>
+      <div class="linha"><label>Chamadas por dia <input type="number" id="lim-dia" min="1" class="curto"></label></div>
+      <div class="linha"><label>Máx. tokens de saída <input type="number" id="lim-tokens" min="500" step="500" class="curto"></label></div>
+      <div class="linha"><label>Orçamento mensal US$ <input type="number" id="lim-orc" min="0" step="0.5" class="curto"></label></div>
+      <p class="dica">O orçamento só soma custos conhecidos (tabela oficial da Anthropic). OpenAI e Gemini: acompanhe no painel deles.</p>
+    </div>
+    <div class="cartao">
+      <h3>Histórico e privacidade</h3>
+      <div class="linha"><label><input type="checkbox" id="hist-ativo"> Guardar histórico de tarefas (data, provedor, tokens, custo)</label></div>
+      <div class="linha"><label><input type="checkbox" id="hist-conteudo"> Guardar também o texto enviado e a resposta</label></div>
+      <div class="linha"><button id="salvar-limites" class="primario">Salvar</button><button id="apagar-hist">Apagar histórico</button></div>
+      <div id="uso-ia" class="dica"></div>
+    </div>
+  </div>
+  <details><summary>Ver histórico</summary><div id="hist-ia" class="hist"></div></details>
+</dialog>
+
+<dialog id="dlg-ref" aria-labelledby="dlg-ref-titulo">
+  <div class="dlg-topo"><h2 id="dlg-ref-titulo">Referências editoriais</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <p class="dica">Um perfil mede <b>técnicas</b> de um canal público (duração, ritmo de fala e de cortes, títulos, capítulos) para comparar com o seu projeto.
+    Nada de vídeo, roteiro ou fala é guardado. Aprenda a técnica; não copie a identidade do criador.</p>
+  <div id="lista-perfis"></div>
+  <details class="cartao"><summary><b>Gerar novo perfil</b></summary>
+    <div class="linha"><label class="bloco cresce">Nome do perfil <input id="ref-nome" placeholder="ex.: Canal X"></label></div>
+    <label class="bloco">Canais do YouTube (um link por linha) <textarea id="ref-canais" rows="2" placeholder="youtube.com/@canal ou youtube.com/channel/..."></textarea></label>
+    <div id="ref-aspectos" class="linha"></div>
+    <div class="linha"><button id="ref-gerar" class="primario">Gerar perfil</button></div>
+    <div class="tarefa" id="tarefa-ref"></div>
+  </details>
+</dialog>
+
+<dialog id="dlg-novo" aria-labelledby="dlg-titulo">
+  <form method="dialog" id="form-novo">
+    <h2 id="dlg-titulo">Novo vídeo</h2>
+    <label class="bloco">Nome do projeto <input id="novo-nome" required maxlength="80" placeholder="ex.: gta6 segredo da praia"></label>
+    <p class="dica">Escolha o formato. Ele já configura o layout, a legenda, o gancho, o áudio e a duração-alvo, e traz um guia de estrutura. Você pode mudar tudo depois.</p>
+    <div id="grade-formatos" class="grade-formatos" role="radiogroup" aria-label="Formato"></div>
+    <label class="bloco">Kit do canal <select id="novo-kit"><option value="">nenhum</option></select>
+      <span class="dica">aplica seu estilo salvo (legenda, layout, logo) por cima do formato</span></label>
+    <div class="linha fim">
+      <button value="cancelar" formnovalidate>Cancelar</button>
+      <button id="criar-ok" value="ok" class="primario">Criar projeto</button>
+    </div>
+  </form>
+</dialog>
+
+<main id="principal" tabindex="-1">
+  <div id="vazio" class="vazio"><h2>Bem-vindo ao Clipador</h2><p>Para começar, clique em <b>+ Novo</b> (vídeo curto ou longo) ou escolha um projeto na lista.</p></div>
+
+  <div id="editor" hidden>
+    <header class="topo">
+      <h2 id="titulo-projeto"></h2>
+      <span id="resumo" class="resumo"></span>
+      <span class="acoes-topo">
+        <span id="salvo" class="dica" aria-live="polite"></span>
+        <button id="desfazer" title="Desfazer (Ctrl+Z)" disabled><span aria-hidden="true">↶</span> Desfazer</button>
+        <button id="refazer" title="Refazer (Ctrl+Y)" disabled><span aria-hidden="true">↷</span> Refazer</button>
+        <button id="ajuda-atalhos" title="Atalhos de teclado" aria-label="Atalhos de teclado"><span aria-hidden="true">⌨</span></button>
+        <button id="duplicar-projeto" class="mini" title="Cria uma cópia (nome-b, nome-c…) para testar outro gancho ou outra versão; RASCUNHO e FINAL não vão junto"><span aria-hidden="true">⧉</span> Duplicar projeto</button>
+        <button id="excluir-projeto" class="mini" title="Move o projeto para a lixeira (projetos/_lixeira); dá para desfazer"><span aria-hidden="true">🗑</span> Excluir projeto</button>
+      </span>
+    </header>
+    <details id="guia-formato" class="guia">
+      <summary><span id="guia-titulo">Guia do formato</span> <span class="dica">— estrutura, roteiro-modelo e o que a pesquisa mostrou</span></summary>
+      <div id="guia-corpo"></div>
+    </details>
+    <nav id="abas" aria-label="Etapas do projeto">
+      <button type="button" data-aba="fonte" class="ativa" aria-current="step"><span class="n">1</span> Fonte<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="cortes"><span class="n">2</span> Cortes<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="estilo"><span class="n">3</span> Estilo<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="audio"><span class="n">4</span> Áudio<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="narracao"><span class="n">5</span> Narração<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="legendas"><span class="n">6</span> Textos<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <button type="button" data-aba="revisar"><span class="n">7</span> Revisar<span class="etapa-estado" aria-hidden="true"></span><span class="so-leitor"></span></button>
+      <span class="abas-sep" aria-hidden="true">Extras</span>
+      <button type="button" data-aba="assistente"><span aria-hidden="true">✨</span> Assistente</button>
+      <button type="button" data-aba="react"><span aria-hidden="true">🎥</span> React</button>
+    </nav>
+    <div id="proximo" class="proximo" role="status"><span id="proximo-texto"></span><button type="button" id="proximo-ir" class="proximo-ir"></button></div>
+    <section id="cc" class="cc" aria-label="Centro de comando">
+      <form id="cc-form" class="linha" autocomplete="off">
+        <label class="cresce"><span class="so-leitor">O que fazer</span>
+          <input id="cc-texto" maxlength="500" placeholder="Diga o que fazer (Ctrl+K) — ex.: gere legendas · zoom de impacto neste trecho · encontre os momentos"></label>
+        <label title="Se as regras não entenderem, a IA escolhe entre as mesmas ações (só o texto do pedido e um resumo do projeto são enviados)"><input type="checkbox" id="cc-ia"> usar IA se precisar</label>
+        <button id="cc-ir">Interpretar</button>
+      </form>
+      <div id="cc-plano" hidden></div>
+    </section>
+
+    <!-- 1 FONTE -->
+    <section data-painel="fonte">
+      <div class="cartao">
+        <h3>Adicionar vídeo do jogo</h3>
+        <p class="dica">Escolha um jeito. O Clipador lê o vídeo e procura as cenas sozinho.</p>
+        <div class="linha">
+          <label class="bloco cresce">Arquivo do seu computador <input type="file" id="fonte-arquivo" accept="video/*"></label>
+          <button id="fonte-enviar">Enviar arquivo</button>
+        </div>
+        <div class="linha">
+          <label class="bloco cresce">Caminho de um arquivo no PC <input id="fonte-caminho" placeholder="C:\...\video.mp4"></label>
+          <button id="fonte-usar-caminho">Usar este arquivo</button>
+        </div>
+        <div class="linha">
+          <label class="bloco cresce">Link do vídeo (YouTube etc.) <input id="fonte-url" placeholder="https://..."></label>
+          <button id="fonte-baixar">Baixar</button>
+        </div>
+        <p class="dica">Use só vídeos que você tem direito de reutilizar.</p>
+        <div class="tarefa" id="tarefa-fonte"></div>
+      </div>
+      <div class="cartao" id="card-comparacao" hidden>
+        <h3>⚖️ Comparação A × B (tela dividida)</h3>
+        <p class="dica">Adicione os dois vídeos acima (ex.: GTA 5 e GTA 6). O 1º vira o de cima e o 2º o de baixo; troque aqui se quiser.
+          Cada vídeo ocupa meia tela, na mesma cena. Não é React: não usa câmera.</p>
+        <div class="linha">
+          <label>Vídeo de cima (A) <select id="cmp-a"></select></label>
+          <label>Rótulo A <input id="cmp-rot-a" maxlength="30" class="curto" placeholder="GTA 5"></label>
+        </div>
+        <div class="linha">
+          <label>Vídeo de baixo (B) <select id="cmp-b"></select></label>
+          <label>Rótulo B <input id="cmp-rot-b" maxlength="30" class="curto" placeholder="GTA 6"></label>
+          <button id="cmp-trocar" title="O vídeo de cima vai para baixo e vice-versa"><span aria-hidden="true">⇅</span> Trocar A e B</button>
+        </div>
+        <div class="linha">
+          <label>Som <select id="cmp-audio"><option value="a">do vídeo de cima (A)</option><option value="b">do vídeo de baixo (B)</option><option value="ambos">dos dois juntos</option></select></label>
+          <label><input type="checkbox" id="cmp-linha"> Linha branca no meio</label>
+        </div>
+        <div class="linha">
+          <button id="cmp-montar" class="primario">Montar comparação</button>
+          <button id="cmp-tocar"><span aria-hidden="true">▶</span> Ver lado a lado</button>
+          <span id="cmp-info" class="dica"></span>
+        </div>
+        <p class="dica">“Montar comparação” põe o A em cima e o B embaixo em todos os trechos, no mesmo instante (timeline vazia: cria um trecho de 20 s).
+          Para alinhar a mesma cena, ajuste “B começa em” de cada trecho na aba 2 · Cortes. Ctrl+Z desfaz.</p>
+        <div class="cmp-palco" aria-label="Prévia da tela dividida">
+          <div class="cmp-metade"><video id="cmp-va" muted playsinline preload="metadata" aria-label="Vídeo de cima (A)"></video><span id="cmp-tag-a" class="cmp-tag"></span></div>
+          <div class="cmp-metade"><video id="cmp-vb" muted playsinline preload="metadata" aria-label="Vídeo de baixo (B)"></video><span id="cmp-tag-b" class="cmp-tag"></span></div>
+        </div>
+      </div>
+      <div id="lista-fontes"></div>
+    </section>
+
+    <!-- 2 CORTES -->
+    <section data-painel="cortes" hidden>
+      <div class="cartao">
+        <div class="linha barra-tlv">
+          <h3 style="margin:0">Timeline</h3>
+          <button id="tlv-play" title="tocar a montagem (Espaço)" aria-label="Tocar a montagem"><span aria-hidden="true">▶</span></button>
+          <span id="tlv-tempo" class="relogio-mini">00:00.0 / 00:00.0</span>
+          <button id="tlv-dividir" title="dividir o trecho no cursor (S)"><span aria-hidden="true">✂</span> Dividir</button>
+          <button id="tlv-duplicar" title="duplicar o trecho selecionado (D)"><span aria-hidden="true">⧉</span> Duplicar</button>
+          <button id="tlv-remover" title="remover o trecho selecionado (Delete)"><span aria-hidden="true">🗑</span> Remover</button>
+          <button id="tlv-congelar" title="insere o quadro do cursor parado por 1 s (pausa dramática, “repara nisso”)"><span aria-hidden="true">❄</span> Congelar</button>
+          <button id="tlv-loop" title="repete 0,9 s do 1º plano no fim: o replay automático emenda sem corte"><span aria-hidden="true">↻</span> Fechar o loop</button>
+          <span class="cresce"></span>
+          <label title="Ao aparar um trecho, a borda gruda no corte de cena mais próximo"><input type="checkbox" id="tlv-ima" checked> Grudar nos cortes</label>
+          <label>Zoom <input type="range" id="tlv-zoom" min="10" max="200" value="60"></label>
+        </div>
+        <div id="tlv" class="tlv" tabindex="0" aria-label="Timeline de vídeo"></div>
+        <details class="atalhos"><summary>Como usar a timeline</summary>
+          <p class="dica">Arraste um trecho para mudar a ordem · puxe as bordas para aparar · clique para pôr o cursor ·
+            S divide · D duplica · Delete remove · ← → movem o cursor (Shift = 1 s) · Ctrl+Z desfaz. Também dá para reordenar
+            com ↑ ↓ na lista ao lado. Arraste arquivos de vídeo para a janela para importar.</p>
+        </details>
+      </div>
+      <div class="cartao" id="cmp-editor" hidden>
+        <h3>⚖️ Editor A × B — corte os dois vídeos com o mesmo tempo</h3>
+        <ol class="passos-cmp">
+          <li>No vídeo de <b>cima (A)</b>, ache a cena e marque <b>Início A</b> e <b>Fim A</b>.</li>
+          <li>No vídeo de <b>baixo (B)</b>, ache a mesma cena e marque <b>Início B</b>. O fim do B é calculado (mesmo tempo do A).
+            Se preferir, marque <b>Fim B</b>: o fim do A acompanha.</li>
+          <li>Confira com <b>▶ Tocar os dois</b> e clique em <b>+ Adicionar à montagem</b>. Clique num trecho da lista para editá-lo aqui.</li>
+        </ol>
+        <div class="cmp-ed-colunas">
+          <div class="cmp-ed-lado">
+            <div class="linha"><b>A · em cima</b><select id="ce-fonte-a" aria-label="Vídeo de cima (A)" class="cresce"></select></div>
+            <video id="ce-va" controls preload="metadata" playsinline></video>
+            <div class="linha">
+              <button data-ce="a-volta" title="voltar 1 quadro (A)"><span aria-hidden="true">◀</span> quadro</button>
+              <button data-ce="a-avanca" title="avançar 1 quadro (A)">quadro ▶</button>
+              <button data-ce="a-ini">[ Início A</button>
+              <button data-ce="a-fim">Fim A ]</button>
+            </div>
+            <p id="ce-info-a" class="relogio-mini">A: marque o início e o fim</p>
+          </div>
+          <div class="cmp-ed-lado">
+            <div class="linha"><b>B · embaixo</b><select id="ce-fonte-b" aria-label="Vídeo de baixo (B)" class="cresce"></select></div>
+            <video id="ce-vb" controls preload="metadata" playsinline></video>
+            <div class="linha">
+              <button data-ce="b-volta" title="voltar 1 quadro (B)"><span aria-hidden="true">◀</span> quadro</button>
+              <button data-ce="b-avanca" title="avançar 1 quadro (B)">quadro ▶</button>
+              <button data-ce="b-ini">[ Início B</button>
+              <button data-ce="b-fim">Fim B ]</button>
+            </div>
+            <p id="ce-info-b" class="relogio-mini">B: marque o início</p>
+          </div>
+        </div>
+        <div class="linha">
+          <span id="ce-dur" class="selo">duração: —</span>
+          <button id="ce-tocar"><span aria-hidden="true">▶</span> Tocar os dois</button>
+          <button id="ce-adicionar" class="primario">+ Adicionar à montagem</button>
+          <button id="ce-salvar" hidden>Salvar no trecho</button>
+          <button id="ce-novo" hidden>Novo par</button>
+          <label title="Ao mexer no vídeo A, o B vai junto para o mesmo ponto da cena (depois de marcar os dois inícios)"><input type="checkbox" id="ce-junto" checked> B acompanha o A</label>
+        </div>
+        <p id="ce-aviso" class="dica" role="status"></p>
+      </div>
+      <div class="duas-colunas">
+        <div>
+          <div class="linha">
+            <select id="cortes-fonte" aria-label="Vídeo-fonte"></select>
+            <span class="dica">Clique numa cena para adicioná-la, ou marque início/fim no player.</span>
+          </div>
+          <div class="player-caixa">
+            <video id="player-fonte" controls preload="metadata"></video>
+            <video id="player-fonte-b" class="tl-oculto" preload="auto" playsinline aria-hidden="true" tabindex="-1"></video>
+            <div id="moldura-crop"><div id="moldura-zoom" title="área que fica na tela no auge do zoom"></div></div>
+          </div>
+          <div class="linha">
+            <button id="marcar-ini">[ Marcar início</button>
+            <button id="marcar-fim">Marcar fim ]</button>
+            <span id="marcacao" class="dica"></span>
+            <button id="add-trecho" class="primario">+ Adicionar trecho</button>
+          </div>
+          <div class="modos" role="group" aria-label="Como escolher os trechos">
+            <button type="button" class="modo ativo" data-modo="cenas" aria-pressed="true">Cenas do vídeo</button>
+            <button type="button" class="modo" data-modo="momentos" aria-pressed="false">Momentos automáticos</button>
+          </div>
+          <div id="modo-cenas">
+            <p class="dica">Cada cena tem uma nota (potencial de retenção estimado). Clique numa cena para adicioná-la à timeline.</p>
+            <div id="grade-cenas" class="grade-cenas"></div>
+          </div>
+          <div class="cartao" id="modo-momentos" hidden>
+            <h3>Momentos automáticos</h3>
+            <p class="dica">O Clipador mede áudio, impactos sonoros, movimento e cortes — tudo no seu PC — e sugere os melhores trechos, explicando cada nota.</p>
+            <div class="linha">
+              <label>Clipes de <input id="mom-dur" type="number" value="25" min="5" max="600" class="curto"> s</label>
+              <label>Quantos <input id="mom-qtd" type="number" value="5" min="1" max="20" class="curto"></label>
+              <button id="mom-analisar" class="primario">Achar momentos</button>
+            </div>
+            <div class="linha">
+              <label class="bloco cresce">Ou descreva o momento que procura <input id="ped-texto" maxlength="500" placeholder="ex.: quando falam do Jason e do carro"></label>
+              <button id="ped-local" title="procura no que é FALADO no vídeo (precisa transcrever uma vez)">Buscar na fala</button>
+              <button id="ped-ia" title="envia só texto (transcrição + momentos medidos) ao provedor de IA ativo">Pedir à IA</button>
+              <button id="ped-transcrever" class="mini">Transcrever fala</button>
+            </div>
+            <p id="ped-info" class="dica"></p>
+            <div id="mom-tarefa"></div>
+            <ol id="mom-lista" class="mom-lista"></ol>
+            <div class="linha" id="mom-acoes" hidden>
+              <button id="mom-lote">Criar um projeto por momento marcado</button>
+              <span class="dica">cada clipe vira um projeto com o mesmo formato, estilo e legenda; narração e aprovação ficam de fora.</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cartao">
+            <h3>Trechos da montagem <span id="dur-timeline" class="dica"></span></h3>
+            <div class="linha">
+              <label>Sugerir automático com ~<input id="alvo-s" type="number" value="20" min="5" max="180" class="curto"> s</label>
+              <button id="sugerir">Sugerir cortes</button>
+              <button id="foco-auto" title="Move o recorte vertical de cada trecho para onde está a ação (não muda o zoom)"><span aria-hidden="true">🎯</span> Foco automático</button>
+              <button id="zoom-sugerir" title="Põe um zoom de impacto só nos trechos com pico forte de ação, no instante do pico"><span aria-hidden="true">🔍</span> Zoom nos picos</button>
+            </div>
+            <p class="dica">Pesquisa: os Shorts de detalhe que viralizaram têm 13–30 s e trocam de plano a cada 1,5–3 s.</p>
+            <div class="tarefa" id="tarefa-render-trecho"></div>
+            <ol id="lista-segmentos"></ol>
+            <details id="det-texto">
+              <summary>Editar pelo texto (fala da montagem)</summary>
+              <p class="dica">Clique numa palavra e Shift+clique em outra para selecionar; “Cortar” tira esse pedaço do vídeo (Ctrl+Z desfaz). Usa a fala transcrita do vídeo-fonte.</p>
+              <div id="texto-montagem" class="texto-montagem"></div>
+              <div class="linha"><button id="cortar-texto" disabled>Cortar palavras selecionadas</button><span id="sel-texto" class="dica"></span></div>
+              <div class="linha"><button id="achar-pausas" title="Pausas de 0,9 s ou mais na fala: sugere o corte, você decide"><span aria-hidden="true">⏱</span> Achar pausas longas</button>
+                <span id="pausas-resumo" class="dica"></span></div>
+              <ul id="lista-pausas" class="verif"></ul>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 ESTILO -->
+    <section data-painel="estilo" hidden>
+      <p class="dica">Tudo aqui é salvo na hora (Ctrl+Z desfaz). Para ver o resultado, gere quadros em <b>7 · Revisar</b>.</p>
+      <div class="cartao" id="card-formato">
+        <h3>Formato</h3>
+        <div class="linha">
+          <select id="sel-formato" aria-label="Formato do vídeo"></select>
+          <button id="aplicar-formato" title="aplica o preset do formato (os trechos e a narração ficam)">Aplicar preset</button>
+        </div>
+        <div class="linha">
+          <label><input type="checkbox" id="cfg-ranking"> Ranking 1…N revelado a cada trecho <span class="dica">(texto = rótulo do trecho; o último trecho é o nº 1)</span></label>
+        </div>
+        <div class="linha">
+          <label><input type="checkbox" id="cfg-capitulos"> Capítulos (cartela na tela + lista para a descrição do YouTube)</label>
+        </div>
+      </div>
+      <div class="cartao" id="card-layout-longo" hidden>
+        <h3>Layout</h3>
+        <p>Vídeo longo: <b>horizontal 16:9 (1920×1080)</b>, fonte inteira e nítida, fundo desfocado quando a proporção não bate. Use o zoom do trecho (aba Cortes) para aproximar.</p>
+      </div>
+      <div class="cartao" id="card-layout-curto">
+        <h3>Layout vertical</h3>
+        <div class="opcoes" id="op-layout">
+          <label><input type="radio" name="layout" value="tela_cheia"><b>Tela cheia</b><span>Recorte 9:16 com zoom no detalhe. Formato dos canais pequenos que passaram de 1 mi.</span></label>
+          <label><input type="radio" name="layout" value="empilhado"><b>Empilhado</b><span>Bloco 16:9 nítido + fundo desfocado ([terceiro]/[terceiro]). Mostra a cena inteira.</span></label>
+          <label><input type="radio" name="layout" value="comparacao"><b>Comparação A × B</b><span>Dois vídeos: um em cima e outro embaixo (ex.: GTA 5 × GTA 6 — 3 mi em 13 s). Escolha o A e o B na aba 1 · Fonte.</span></label>
+        </div>
+      </div>
+      <div class="cartao">
+        <h3>Título do início e outros textos</h3>
+        <p class="dica">Título do 1º segundo, legendas e rótulos agora ficam todos juntos, editáveis em cima do vídeo.</p>
+        <div class="linha"><button type="button" data-ir-aba="legendas">Ir para 6 · Textos</button></div>
+      </div>
+      <div class="cartao">
+        <h3>Legenda</h3>
+        <div class="linha">
+          <select id="leg-estilo" aria-label="Estilo da legenda">
+            <option value="karaoke">Karaokê — até 5 palavras, palavra falada em amarelo</option>
+            <option value="palavra">Palavra — 1–2 palavras grandes no centro</option>
+            <option value="caixa">Caixa — frase curta em caixa branca ([terceiro])</option>
+          </select>
+          <label title="Posição vertical em pixels (a tela tem 1920 de altura). Vazio = automática">Altura da legenda <input id="leg-y" type="number" min="300" max="1520" class="curto" placeholder="auto"></label>
+          <label><input id="leg-maius" type="checkbox"> MAIÚSCULAS</label>
+        </div>
+      </div>
+      <div class="cartao" id="card-kit">
+        <h3>Kit do canal e logo</h3>
+        <div class="linha">
+          <select id="kit-sel" aria-label="Kit do canal"></select>
+          <button id="kit-aplicar">Aplicar kit</button>
+          <button id="kit-salvar" title="guarda legenda, layout, logo, referência e mixagem deste projeto">Salvar estilo atual como kit</button>
+          <button id="kit-excluir" class="mini">Excluir kit</button>
+        </div>
+        <div class="linha">
+          <button id="kit-biblioteca" title="Duplicar, renomear e editar kits; presets de zoom"><span aria-hidden="true">🎨</span> Biblioteca de estilos…</button>
+          <button id="kit-zoom" title="Coloca o zoom padrão do kit escolhido só nos trechos que ainda não têm zoom">Zoom do kit nos trechos sem zoom</button>
+          <span id="kit-zoom-info" class="dica"></span>
+        </div>
+        <div class="linha">
+          <label>Logo <select id="marca-arquivo"></select></label>
+          <label class="botao-arquivo">Enviar logo (PNG transparente)… <input type="file" id="marca-upload" accept=".png,.webp,.jpg,.jpeg" hidden></label>
+          <label>Canto <select id="marca-pos">
+            <option value="sup_dir">superior direito</option><option value="sup_esq">superior esquerdo</option>
+            <option value="inf_dir">inferior direito</option><option value="inf_esq">inferior esquerdo</option></select></label>
+          <label>Tamanho <input type="range" id="marca-tamanho" min="0.04" max="0.4" step="0.01"></label>
+          <label>Opacidade <input type="range" id="marca-opacidade" min="0.1" max="1" step="0.05"></label>
+        </div>
+        <p class="dica">O logo fica dentro da área segura (abaixo dos botões do topo, acima do rodapé) e por baixo das legendas. Confira nos quadros da aba Revisar.</p>
+      </div>
+    </section>
+
+    <!-- 4 AUDIO -->
+    <section data-painel="audio" hidden>
+      <div class="cartao">
+        <div class="linha">
+          <h3 style="margin:0">Timeline de áudio</h3>
+          <span class="dica">Clique numa trilha para editar · <b>M</b> liga/desliga · <b>S</b> ouve só ela · Espaço toca/pausa</span>
+          <span class="cresce"></span>
+          <button id="previa-audio" class="primario"><span aria-hidden="true">▶</span> Ouvir mixagem final</button>
+        </div>
+        <div id="tl-audio" class="tl" role="group" aria-label="Trilhas de áudio"></div>
+        <div class="linha">
+          <audio id="audio-previa" controls class="cresce"></audio>
+          <span id="ouvindo" class="selo"></span>
+        </div>
+        <div class="tarefa" id="tarefa-audio"></div>
+      </div>
+      <div class="duas-colunas">
+        <div class="cartao" id="painel-trilha"></div>
+        <div>
+          <div class="cartao">
+            <h3>Mixagem final</h3>
+            <div class="linha"><label><input type="checkbox" data-mix="ducking"> Abaixar música e som do jogo quando eu falo (ducking)</label></div>
+            <div class="linha"><label>Intensidade <select data-mix="ducking_forca">
+              <option value="leve">leve</option><option value="media">média</option><option value="forte">forte</option></select></label></div>
+            <div class="linha"><label><input type="checkbox" data-mix="normalizar"> Normalizar volume final em −14 LUFS</label></div>
+            <p class="dica">Os efeitos sonoros não são abaixados pelo ducking. Tudo é salvo automaticamente e pode ser desfeito (Ctrl+Z).</p>
+          </div>
+          <div class="cartao">
+            <h3>O que você vai ouvir no vídeo final</h3>
+            <ul id="resumo-audio" class="resumo-audio"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 NARRACAO -->
+    <section data-painel="narracao" hidden>
+      <div class="duas-colunas">
+        <div>
+          <div class="linha">
+            <button id="gerar-proxy">Gerar prévia da montagem</button>
+            <span id="estado-proxy"></span>
+          </div>
+          <p class="dica">Assista à prévia inteira (pause, avance e volte à vontade) antes de gravar. A narração é gravada em cima dela, então fica sincronizada com o vídeo final.</p>
+          <div class="linha">
+            <label title="Toca a narração já salva junto com a prévia, sincronizada (não grava nada)"><input type="checkbox" id="com-narracao"> Tocar a prévia com a narração gravada</label>
+          </div>
+          <div class="tarefa" id="tarefa-proxy"></div>
+          <video id="player-proxy" controls preload="metadata"></video>
+          <div class="linha">
+            <label>Microfone <select id="mic"><option value="">(ative o microfone)</option></select></label>
+            <button type="button" id="mic-ativar"><span aria-hidden="true">🎙</span> Ativar microfone</button>
+            <div class="medidor" aria-hidden="true"><div id="nivel"></div></div>
+          </div>
+          <div class="linha">
+            <button id="ensaiar"><span aria-hidden="true">▶</span> Ensaiar</button>
+            <button id="gravar" class="perigo"><span aria-hidden="true">●</span> Gravar</button>
+            <button id="parar" disabled><span aria-hidden="true">■</span> Parar</button>
+            <span id="rel-grav" class="relogio">00:00</span>
+          </div>
+          <div id="pos-gravacao" hidden class="cartao">
+            <h3>Ouça antes de salvar</h3>
+            <audio id="audio-gravado" controls></audio>
+            <div class="linha">
+              <button id="salvar-narr" class="primario">Salvar narração</button>
+              <button id="descartar-narr">Descartar</button>
+              <span id="info-grav" class="dica"></span>
+            </div>
+          </div>
+          <div class="cartao">
+            <h3>Narração atual</h3>
+            <div id="narr-atual" class="dica"></div>
+            <div class="linha">
+              <label>ou enviar arquivo de áudio <input type="file" id="narr-arquivo" accept="audio/*"></label>
+              <button id="narr-enviar">Enviar</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3>Roteiro / teleprompter</h3>
+          <textarea id="roteiro" aria-label="Roteiro" placeholder="Escreva o roteiro: gancho na 1ª frase, um assunto só, sem “até a próxima” (o fim emenda no começo)."></textarea>
+          <div class="linha"><label><input type="checkbox" id="rolagem" checked> rolagem automática</label>
+          <button id="salvar-roteiro">Salvar roteiro</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 TEXTOS (titulo do inicio, legendas, rotulos) -->
+    <section data-painel="legendas" hidden>
+      <div id="tx-invisivel" class="aviso-info" role="status" hidden>
+        <span>⚠ Suas legendas <b>não aparecem no vídeo</b>: elas foram feitas de uma narração e o projeto está sem narração.</span>
+        <button id="tx-mostrar" class="primario">Mostrar no vídeo</button>
+      </div>
+      <div id="leg-alerta" class="aviso-info" role="status" hidden>
+        <span id="leg-alerta-texto"></span>
+        <button id="leg-alerta-atualizar" class="primario"><span aria-hidden="true">🔄</span> Atualizar legendas</button>
+      </div>
+      <div class="duas-colunas">
+        <div>
+          <div class="cartao" id="leg-previa-cartao">
+            <h3>Editar no próprio vídeo</h3>
+            <p class="dica">Pause e <b>clique em qualquer texto</b> do vídeo (título, legenda, rótulo) para mudar ou excluir.
+              “+ Legenda aqui” escreve uma legenda nova no instante em que o vídeo está.</p>
+            <div id="leg-sem-previa" class="aviso-info" hidden>
+              <span>Para editar em cima do vídeo, gere a prévia da montagem (leva alguns segundos).</span>
+              <button id="tx-gerar-previa" class="primario">Gerar prévia</button>
+              <div class="tarefa" id="tarefa-tx-previa"></div>
+            </div>
+            <div class="leg-palco">
+              <video id="leg-video" controls playsinline preload="metadata"></video>
+              <button type="button" id="tx-ov-gancho" class="tx-alvo tx-gancho" hidden aria-label="Editar o título do início"></button>
+              <button type="button" id="tx-ov-rot-a" class="tx-alvo tx-rotulo" hidden aria-label="Editar o rótulo do vídeo de cima"></button>
+              <button type="button" id="tx-ov-rot-b" class="tx-alvo tx-rotulo" hidden aria-label="Editar o rótulo do vídeo de baixo"></button>
+              <button type="button" id="leg-overlay" class="tx-alvo" hidden aria-label="Editar esta legenda"></button>
+              <form id="tx-editor" class="tx-editor" hidden>
+                <label class="bloco"><span id="tx-ed-titulo">Texto</span> <input id="tx-ed-texto" maxlength="200" autocomplete="off"></label>
+                <div class="linha">
+                  <button id="tx-ed-salvar" class="primario">Salvar</button>
+                  <button type="button" id="tx-ed-excluir"><span aria-hidden="true">🗑</span> Excluir</button>
+                  <button type="button" id="tx-ed-cancelar">Cancelar</button>
+                </div>
+                <p id="tx-ed-info" class="dica"></p>
+              </form>
+            </div>
+            <div class="linha">
+              <button id="tx-add-aqui" title="Escreve uma legenda que começa no instante atual do vídeo">+ Legenda aqui</button>
+              <span id="tx-tempo" class="relogio-mini"></span>
+              <span class="dica">Aproximação ao vivo; o resultado exato sai em 7 · Revisar → quadros.</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cartao">
+            <h3>Título do início</h3>
+            <div class="linha">
+              <input id="tx-gancho" class="cresce" aria-label="Título do início" maxlength="80" placeholder="sem título (escreva para pôr um)">
+              <label>some aos <input id="tx-gancho-ate" type="number" step="0.5" min="0" class="curto"> s</label>
+            </div>
+            <div class="linha">
+              <button id="tx-gancho-tirar"><span aria-hidden="true">✕</span> Tirar o título</button>
+              <button id="tx-gancho-sugestao" hidden>Usar sugestão</button>
+            </div>
+            <p class="dica">Aparece no topo no 1º segundo (0 s = o vídeo todo). Promessa concreta + curiosidade; evite “o novo trailer acabou de…”.</p>
+          </div>
+          <div class="cartao" id="tx-rotulos" hidden>
+            <h3>Rótulos da comparação</h3>
+            <div class="linha">
+              <label>Vídeo de cima <input id="tx-rot-a" maxlength="30" size="14" placeholder="GTA 5"></label>
+              <label>Vídeo de baixo <input id="tx-rot-b" maxlength="30" size="14" placeholder="GTA 6"></label>
+            </div>
+            <p class="dica">Vazio = sem rótulo. Cada trecho pode ter o seu na aba 2 · Cortes.</p>
+          </div>
+          <div class="cartao">
+            <h3>Legendas <span id="tx-n" class="dica"></span></h3>
+            <div class="linha">
+              <select id="leg-origem" aria-label="De onde vem a fala">
+                <option value="narracao">Da minha narração</option>
+                <option value="video">Do áudio do vídeo (falas do jogo/trailer)</option>
+              </select>
+              <select id="modelo-whisper" aria-label="Precisão da transcrição">
+                <option value="small">Rápido (Whisper small)</option>
+                <option value="medium">Mais preciso e mais lento (Whisper medium)</option>
+              </select>
+              <button id="transcrever">Transcrever</button>
+              <button id="leg-atualizar" title="Transcreve de novo a fala atual (mesma origem) e refaz os cartões; nunca passa do fim do vídeo. Dá para desfazer."><span aria-hidden="true">🔄</span> Atualizar legendas</button>
+            </div>
+            <div class="linha">
+              <button id="tx-add" title="Legenda escrita por você, depois da última (ou no instante do vídeo)">+ Adicionar legenda</button>
+              <button id="salvar-legendas" class="primario">Salvar correções</button>
+              <button id="leg-destacar" title="Marca até 1 palavra importante por cartão (números, siglas, nomes)"><span aria-hidden="true">✨</span> Destacar</button>
+              <button id="tx-excluir-todas"><span aria-hidden="true">🗑</span> Excluir todas</button>
+              <a id="baixar-srt" class="botao" href="#" download>⬇ .srt</a>
+              <a id="baixar-vtt" class="botao" href="#" download>⬇ .vtt</a>
+            </div>
+            <div class="tarefa" id="tarefa-leg"></div>
+            <p class="dica">Corrija as palavras de cada cartão e clique em <b>Salvar correções</b> (apagar o texto todo exclui o cartão). Escreva <b>*palavra*</b> para destacá-la. ▶ leva o vídeo até o cartão.</p>
+            <div id="lista-cartoes"></div>
+          </div>
+          <div class="cartao">
+            <h3>Visual da legenda</h3>
+            <div class="linha" id="botoes-plataforma"></div>
+            <p class="dica" id="nota-plataforma">Recomendações de legibilidade e de área livre da interface de cada app — não são regras oficiais, e os apps mudam. Ajuste à vontade abaixo.</p>
+            <details><summary>Personalizar visual</summary>
+              <div class="linha">
+                <label>Fonte <select id="lv-fonte"></select></label>
+                <label>Tamanho <input type="number" id="lv-tamanho" min="30" max="200" class="curto"></label>
+                <label>Contorno <input type="number" id="lv-contorno" min="0" max="20" class="curto"></label>
+                <label>Sombra <input type="number" id="lv-sombra" min="0" max="10" class="curto"></label>
+              </div>
+              <div class="linha">
+                <label>Cor do texto <input type="color" id="lv-cor"></label>
+                <label>Cor do destaque <input type="color" id="lv-destaque"></label>
+                <label>Animação <select id="lv-animacao"><option value="nenhuma">nenhuma</option><option value="pop">pop (cresce ao entrar)</option></select></label>
+                <button id="lv-salvar" class="primario">Salvar visual</button>
+              </div>
+              <p class="dica">Estilo, posição (y) e MAIÚSCULAS ficam na aba 3 · Estilo.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 REVISAR -->
+    <section data-painel="revisar" hidden>
+      <div class="cartao">
+        <h3>1 · Conferir quadros</h3>
+        <div class="linha">
+          <label class="bloco cresce">Instantes dos quadros (em segundos) <input id="tempos" placeholder="ex.: 0.5, 3, 8, 15"></label>
+          <button id="gerar-quadros">Gerar quadros</button>
+          <button id="excluir-quadros" class="mini" title="apaga as imagens de conferência da pasta quadros/"><span aria-hidden="true">🗑</span> Apagar quadros</button>
+        </div>
+        <div class="tarefa" id="tarefa-quadros"></div>
+        <div id="grade-quadros" class="grade-quadros"></div>
+      </div>
+      <div class="cartao">
+        <h3>2 · Rascunho → aprovação → final</h3>
+        <div class="linha">
+          <button id="gerar-rascunho" class="primario">Gerar RASCUNHO</button>
+          <button id="aprovar"><span aria-hidden="true">✔</span> Aprovar este rascunho</button>
+          <button id="gerar-final">Gerar FINAL</button>
+          <span id="status-aprov" class="dica"></span>
+        </div>
+        <div id="bloco-capitulos" class="cartao" hidden>
+          <h3>Capítulos para a descrição do YouTube</h3>
+          <textarea id="txt-capitulos" aria-label="Capítulos para a descrição" readonly rows="5" style="width:100%"></textarea>
+          <div class="linha"><button id="copiar-capitulos">Copiar</button><span id="avisos-capitulos" class="dica"></span></div>
+        </div>
+        <div class="tarefa" id="tarefa-render"></div>
+        <div class="linha" id="lista-saidas" role="group" aria-label="Vídeos gerados"></div>
+        <div class="linha"><button id="exportar-1x1" disabled>Versão 1:1 (quadrada) do vídeo selecionado</button>
+          <span class="dica">recorta a faixa com a ação e a legenda do RASCUNHO/FINAL, sem renderizar de novo (feed do Instagram/Facebook).</span></div>
+        <div class="linha"><button id="exportar-sem-audio" disabled>Versão sem áudio do vídeo selecionado</button>
+          <span class="dica">para pôr a música da própria rede (TikTok e Reels só deixam usar as músicas deles dentro do app).</span></div>
+        <div class="linha"><label><input type="checkbox" id="revisar-mudo"> Assistir sem som</label>
+          <span id="dica-mudo" class="dica" hidden>A maioria assiste Shorts sem som: dá para entender só com a imagem e o texto? O gancho aparece escrito nos primeiros segundos?</span></div>
+        <video id="player-saida" controls preload="metadata"></video>
+      </div>
+      <div class="cartao" id="card-verificar">
+        <h3>Verificação antes de exportar</h3>
+        <div class="linha"><button id="verificar">Verificar agora</button>
+          <span class="dica">Confere legenda × vídeo, arquivos, câmera e duração; se houver RASCUNHO atual, também trechos pretos, imagem congelada, silêncio e volume.</span></div>
+        <ul id="lista-verif" class="verif"></ul>
+      </div>
+      <div class="cartao" id="card-publicacao">
+        <h3>3 · Publicação por rede</h3>
+        <p class="dica">O app prepara o texto e confere os limites de cada rede; quem publica é você. Tudo salva na hora. Nada aqui é previsão de views.</p>
+        <label class="bloco">Palavra-chave (como o público procuraria o assunto)
+          <input id="pub-chave" maxlength="80" placeholder="ex.: gta 6 trailer"></label>
+        <div id="pub-mencoes" class="dica" aria-live="polite"></div>
+        <div class="modos" role="group" aria-label="Rede social">
+          <button type="button" class="modo ativo" data-rede="youtube" aria-pressed="true">YouTube</button>
+          <button type="button" class="modo" data-rede="tiktok" aria-pressed="false">TikTok</button>
+          <button type="button" class="modo" data-rede="instagram" aria-pressed="false">Instagram</button>
+        </div>
+        <div data-pub="youtube">
+          <label class="bloco">Título <span id="pub-titulo-n" class="dica"></span><input id="pub-titulo" maxlength="150"></label>
+          <label class="bloco">Descrição <textarea id="pub-descricao" rows="4"></textarea></label>
+          <label class="bloco">Hashtags (3 a 5) <input id="pub-hashtags" placeholder="#gta6 #rockstargames"></label>
+          <label class="bloco">Tags, separadas por vírgula (a 1ª = a palavra-chave) <input id="pub-tags" placeholder="gta 6 trailer, gta 6, rockstar"></label>
+          <div class="linha">
+            <label class="bloco cresce">Categoria <select id="pub-categoria">
+              <option value="20">Jogos</option><option value="24">Entretenimento</option><option value="23">Comédia</option>
+              <option value="22">Pessoas e blogs</option><option value="27">Educação</option><option value="28">Ciência e tecnologia</option>
+              <option value="25">Notícias e política</option><option value="1">Filmes e animação</option></select></label>
+            <label class="bloco cresce">Privacidade <select id="pub-privacidade">
+              <option value="private">Privado</option><option value="unlisted">Não listado</option><option value="public">Público</option></select></label>
+          </div>
+          <fieldset class="decl"><legend>Feito para crianças? Declaração legal: só você decide.</legend>
+            <label><input type="radio" name="pub-criancas" value="sim"> Sim</label>
+            <label><input type="radio" name="pub-criancas" value="nao"> Não</label></fieldset>
+          <fieldset class="decl"><legend>Tem conteúdo alterado ou sintético realista? (voz clonada, cena de IA que parece real; cortes e legendas não contam)</legend>
+            <label><input type="radio" name="pub-alterado" value="sim"> Sim</label>
+            <label><input type="radio" name="pub-alterado" value="nao"> Não</label></fieldset>
+        </div>
+        <div data-pub="tiktok" hidden>
+          <label class="bloco">Legenda do TikTok <span id="pub-tk-n" class="dica"></span><textarea id="pub-tk-legenda" rows="4"></textarea></label>
+          <label class="bloco">Hashtags (3 a 5) <input id="pub-tk-hashtags" placeholder="#gta6 #gta"></label>
+        </div>
+        <div data-pub="instagram" hidden>
+          <label class="bloco">Legenda do Reels (a 1ª linha aparece antes do “mais”) <span id="pub-ig-n" class="dica"></span><textarea id="pub-ig-legenda" rows="4"></textarea></label>
+          <label class="bloco">Hashtags (no máximo 5) <input id="pub-ig-hashtags" placeholder="#gta6 #gta"></label>
+        </div>
+        <div class="linha"><button id="pub-adaptar">Adaptar do YouTube</button>
+          <span class="dica">preenche TikTok e Instagram com o título e a descrição; depois ajuste o tom de cada rede.</span></div>
+        <details class="biblio">
+          <summary>Crédito, ponte para o vídeo longo e capa</summary>
+          <label class="bloco">Crédito da fonte <input id="pub-credito" maxlength="300" placeholder="ex.: Imagens: trailer oficial da Rockstar Games"></label>
+          <label class="bloco">Ponte para o vídeo longo <input id="pub-ponte" maxlength="300" placeholder="ex.: Análise completa no canal (link)"></label>
+          <div class="linha">
+            <label class="bloco">Capa: instante (s) <input id="pub-capa-tempo" type="number" min="0" step="0.1" inputmode="decimal"></label>
+            <button id="pub-capa">Gerar capa</button>
+            <span class="dica">tirada do FINAL, ou do RASCUNHO, ou da prévia.</span>
+          </div>
+          <img id="pub-capa-img" class="pub-capa" alt="Capa escolhida" hidden>
+        </details>
+        <div class="linha"><button id="pub-verificar" class="primario">Verificar publicação</button><button id="pub-copiar">Copiar texto desta rede</button>
+          <button id="pub-exportar">Exportar PUBLICACAO.md</button><a id="pub-md" target="_blank" rel="noopener" hidden>abrir PUBLICACAO.md</a></div>
+        <ul id="pub-verif" class="verif" aria-live="polite"></ul>
+        <p class="dica">Dica: a aba Assistente sugere título, descrição e hashtags. Ao gerar o FINAL, o PUBLICACAO.md é salvo ao lado dele.</p>
+      </div>
+    </section>
+
+    <!-- REACT (extra) -->
+    <section data-painel="react" hidden>
+      <div class="duas-colunas">
+        <div>
+          <div class="cartao">
+            <h3>Prévia da composição</h3>
+            <div id="rs-vazio" class="dica" hidden>Gere a prévia da montagem (botão abaixo) para ver o vídeo ao fundo.</div>
+            <div id="rs" class="stage"><video id="rs-fundo" playsinline></video>
+              <div id="rs-cam"><video id="rs-video" playsinline muted></video><canvas id="rs-canvas" hidden></canvas></div></div>
+            <div class="linha"><button type="button" id="rs-tocar"><span aria-hidden="true">▶</span> Tocar composição</button>
+              <input type="range" id="rs-pos" class="cresce" min="0" max="1" step="0.01" value="0" aria-label="Posição na prévia da composição"></div>
+            <p class="dica" id="rs-dica">Arraste a câmera para posicionar. O recorte aqui usa a mesma conta do vídeo final (chroma) e a máscara real da IA; confira o resultado exato em Revisar → quadros.</p>
+            <div class="linha"><button id="rs-proxy">Gerar prévia da montagem</button><span class="tarefa" id="tarefa-rs"></span></div>
+          </div>
+          <div class="cartao">
+            <h3>Gravar</h3>
+            <div class="linha"><label>Câmera <select id="rs-cam-sel"></select></label><label>Microfone <select id="rs-mic-sel"></select></label></div>
+            <div class="linha"><div class="medidor"><div id="rs-nivel"></div></div><span id="rs-estado" class="dica"></span></div>
+            <div class="linha">
+              <button id="rs-ligar"><span aria-hidden="true">📷</span> Ligar câmera</button>
+              <button id="rs-gravar" class="perigo" disabled><span aria-hidden="true">●</span> Gravar</button>
+              <button id="rs-pausar" disabled><span aria-hidden="true">⏸</span> Pausar</button>
+              <button id="rs-parar" disabled><span aria-hidden="true">■</span> Parar</button>
+              <span id="rs-relogio" class="relogio">00:00</span>
+            </div>
+            <p class="dica"><b>Use fones de ouvido</b>: o som do jogo toca enquanto você grava e entraria no microfone. O microfone vira a trilha de narração (com tratamento de voz e ducking).</p>
+            <div id="rs-revisar" hidden class="cartao">
+              <h4>Confira antes de salvar</h4>
+              <video id="rs-rev" controls style="max-height:240px"></video>
+              <div class="linha"><button id="rs-salvar" class="primario">Salvar gravação</button><button id="rs-descartar">Descartar</button><span id="rs-info" class="dica"></span></div>
+            </div>
+            <div class="linha"><label>ou enviar um vídeo de câmera <input type="file" id="rs-arquivo" accept="video/*"></label>
+              <label><input type="checkbox" id="rs-usar-audio" checked> usar o áudio dele como narração</label><button id="rs-enviar">Enviar</button></div>
+            <div class="tarefa" id="tarefa-rs-up"></div>
+          </div>
+        </div>
+        <div>
+          <div class="cartao">
+            <h3>Composição</h3>
+            <div id="rs-status" class="dica"></div>
+            <div class="linha"><label><input type="checkbox" id="rs-ativo"> Usar a câmera no vídeo</label>
+              <button id="rs-remover" class="mini">Remover câmera do projeto</button></div>
+            <div class="opcoes" id="rs-modos">
+              <label><input type="radio" name="rs-modo" value="janela"><b>Janela sobreposta</b><span>O jogo ocupa tudo; a câmera aparece numa janela que você move e redimensiona.</span></label>
+              <label><input type="radio" name="rs-modo" value="dividido"><b>Tela dividida</b><span>Jogo em cima, câmera embaixo (só vídeos curtos).</span></label>
+              <label><input type="radio" name="rs-modo" value="fundo_virtual"><b>Fundo virtual</b><span>Só você, sem fundo, sobre o jogo. Precisa de chroma key ou recorte por IA.</span></label>
+            </div>
+            <div class="linha" id="rs-tam-cfg">
+              <label>Tamanho <input type="range" id="rs-w" min="15" max="100" step="1"> <b id="rs-w-v"></b></label>
+            </div>
+            <div class="linha" id="rs-janela-cfg">
+              <label>Forma <select id="rs-forma"><option value="retangulo">retângulo</option><option value="circulo">círculo</option><option value="vertical">vertical 9:16</option></select></label>
+              <label><input type="checkbox" id="rs-borda"> borda</label>
+            </div>
+            <div class="linha"><label><input type="checkbox" id="rs-espelhar"> espelhar a câmera</label>
+              <label>Sincronia <input type="number" id="rs-desl" step="0.05" class="curto"> s <span class="dica">+ atrasa a câmera</span></label></div>
+          </div>
+          <div class="cartao" id="rs-recorte">
+            <h3>Remover o fundo</h3>
+            <h4>Chroma key (fundo verde)</h4>
+            <div class="linha"><label><input type="checkbox" id="rs-chroma"> ligar</label><label>Cor <input type="color" id="rs-chroma-cor"></label>
+              <label><input type="checkbox" id="rs-despill"> reduzir reflexo verde</label></div>
+            <div class="linha"><label>Tolerância <input type="range" id="rs-sim" min="1" max="60"> <b id="rs-sim-v"></b></label>
+              <label>Suavizar borda <input type="range" id="rs-mist" min="0" max="50"> <b id="rs-mist-v"></b></label></div>
+            <h4>Recorte por IA (sem tela verde)</h4>
+            <div class="linha"><label><input type="checkbox" id="rs-ia"> ligar</label><button id="rs-ia-gerar">Gerar recorte da gravação</button><span class="tarefa" id="tarefa-rs-ia"></span></div>
+            <div class="linha">
+              <label title="Mais alto = recorta mais justo (tira fundo que sobrou); mais baixo = guarda mais do corpo">Refinamento <input type="range" id="rs-ia-limiar" min="20" max="80"> <b id="rs-ia-limiar-v"></b></label>
+              <label title="Largura da transição entre você e o fundo (cabelo fica mais natural com borda mais suave)">Borda suave <input type="range" id="rs-ia-borda" min="0" max="100"> <b id="rs-ia-borda-v"></b></label>
+              <label title="Mistura cada quadro com o anterior: menos tremida, mas segue movimentos rápidos com atraso">Estabilidade <input type="range" id="rs-ia-est" min="0" max="80"> <b id="rs-ia-est-v"></b></label>
+            </div>
+            <p id="rs-ia-aviso" class="dica"></p>
+            <p class="dica">Roda <b>neste PC</b> (MediaPipe), nada é enviado. Funciona melhor com boa luz, câmera parada e fundo sem pessoas. Não é perfeito em qualquer câmera: se as bordas ficarem ruins, use chroma key ou o modo janela.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASSISTENTE (extra) -->
+    <section data-painel="assistente" hidden>
+      <div class="duas-colunas">
+        <div>
+          <div class="cartao">
+            <h3>Pedir sugestões à IA</h3>
+            <div id="ia-status" class="dica"></div>
+            <div class="linha">
+              <select id="ia-tarefa" aria-label="Tarefa"></select>
+              <label>Referência <select id="ia-perfil"><option value="">nenhuma</option></select></label>
+            </div>
+            <textarea id="ia-extra" aria-label="Observações para a IA" rows="3" style="width:100%" placeholder="observações (opcional): público, tom, o que destacar…"></textarea>
+            <div class="linha">
+              <button id="ia-ver">Ver o que será enviado</button>
+              <button id="ia-pedir" class="primario">Pedir sugestões</button>
+            </div>
+            <div class="tarefa" id="tarefa-ia"></div>
+            <pre id="ia-previa" class="previa-envio" hidden></pre>
+          </div>
+          <div id="ia-resultado"></div>
+        </div>
+        <div>
+          <div class="cartao">
+            <h3>Comparar com uma referência</h3>
+            <div class="linha"><select id="ref-sel" class="cresce" aria-label="Perfil de referência"><option value="">escolha um perfil</option></select>
+              <button id="ref-aplicar" title="aplica duração-alvo, layout, legenda e capítulos medidos na referência">Aplicar parâmetros</button></div>
+            <div id="ref-comparacao"></div>
+            <p class="dica">Comparação automática por regras (não usa IA): "referência" = observado no canal; "sugestão" = recomendação.</p>
+          </div>
+          <div class="cartao">
+            <h3>Sugestões anteriores</h3>
+            <div id="ia-anteriores" class="dica"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<dialog id="dlg-previa-trecho" aria-labelledby="dlg-pt-titulo">
+  <div class="dlg-topo"><h2 id="dlg-pt-titulo">Prévia do trecho</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <video id="pt-video" controls autoplay loop playsinline></video>
+  <p class="dica">Renderizado de verdade (layout e zoom iguais ao vídeo final), em resolução menor.</p>
+</dialog>
+<div id="aviso" class="aviso-vazio" role="status" aria-live="polite" aria-atomic="true"><span id="aviso-texto"></span><button type="button" id="aviso-acao" class="mini" hidden></button><button type="button" id="aviso-fechar" class="mini" aria-label="Fechar aviso"><span aria-hidden="true">✕</span></button></div>
+<div id="aviso-alerta" class="so-leitor" role="alert"></div>
+<dialog id="dlg-atalhos" aria-labelledby="dlg-atalhos-titulo">
+  <div class="dlg-topo"><h2 id="dlg-atalhos-titulo">Atalhos de teclado</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <table class="tabela">
+    <tr><td><kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd></td><td>desfazer / refazer</td></tr>
+    <tr><td><kbd>Alt+1</kbd> … <kbd>Alt+9</kbd></td><td>trocar de etapa (8 = Assistente, 9 = React)</td></tr>
+    <tr><td><kbd>Espaço</kbd></td><td>tocar/pausar (aba Cortes, com o foco na timeline; aba Áudio)</td></tr>
+    <tr><td><kbd>S</kbd> · <kbd>D</kbd> · <kbd>Delete</kbd></td><td>na timeline: dividir · duplicar · remover o trecho</td></tr>
+    <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>na timeline: mover o cursor (Shift = 1 s)</td></tr>
+    <tr><td><kbd>Ctrl+K</kbd></td><td>escrever um comando (centro de comando)</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>tirar o foco do campo</td></tr>
+  </table>
+  <p class="dica">Os atalhos de uma letra só funcionam com o foco na timeline (clique nela ou use Tab), para não atrapalhar quem navega pelos botões.</p>
+</dialog>
+<script src="/static/js/base.js"></script>
+<script src="/static/js/projetos.js"></script>
+<script src="/static/js/fonte.js"></script>
+<script src="/static/js/cortes.js"></script>
+<script src="/static/js/kits.js"></script>
+<script src="/static/js/comandos.js"></script>
+<script src="/static/js/zoom.js"></script>
+<script src="/static/js/estilo.js"></script>
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/narracao.js"></script>
+<script src="/static/js/textos.js"></script>
+<script src="/static/js/revisar.js"></script>
+<script src="/static/js/ia.js"></script>
+<script src="/static/js/publicacao.js"></script>
+<script src="/static/js/timeline.js"></script>
+<script src="/static/js/react.js"></script>
+<script src="/static/js/inicio.js"></script>
+</body>
+</html>

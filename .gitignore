@@ -1,0 +1,35 @@
+# Dados e mídia do usuário (nunca no Git)
+projetos/
+videos prontos/
+memes_cortados/
+_arquivo_antigravity/
+_versoes/
+musicas/
+efeitos/
+referencias/videos/
+config/
+kits/
+modelos/
+canais/*/privado/
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.ogg
+video_memes_info.json
+
+# Ambiente e caches
+__pycache__/
+*.pyc
+.pytest_cache/
+*.tmp
+.claude/settings.local.json
+.claude/*.backup
+
+# Configuracao desta maquina e scripts com caminhos pessoais
+.claude/launch.json
+cortar_memes.py
