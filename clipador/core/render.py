@@ -13,7 +13,7 @@ import subprocess
 import threading
 import time
 
-from . import audio, editonny, formatos, kits, layouts, legendas, midia, projeto, react
+from . import audio, editonny, editonny_fala, formatos, kits, layouts, legendas, midia, projeto, react
 from .midia import SEM_JANELA
 
 CODIFICACAO = {
@@ -594,6 +594,11 @@ def render(p, modo, progresso=None, solo=None):
         if h != p["aprovacao"].get("aprovado_hash"):
             raise ErroRender("o FINAL so pode ser gerado depois de aprovar o rascunho atual "
                              "(algo mudou desde a aprovacao, ou nada foi aprovado)")
+        if p.get("editor") == "editonny":          # editado pelo editonny: o FINAL e o rascunho aprovado
+            try:
+                return editonny_fala.final_por_copia(p)
+            except (ValueError, editonny.ErroEditonny) as e:
+                raise ErroRender(str(e))
     marca = projeto.hash_conteudo(p) if modo == "rascunho" else projeto.hash_previa(p) if modo == "proxy" else None
     cmd, total, saida = montar_comando(p, modo, solo=solo)
     base, ext = os.path.splitext(saida)

@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .comum import ESTATICO, HOSTS_LOCAIS
-from .rotas import (audio, comandos, editonny, estudio, fontes, ia, kits, legendas, projetos, publicacao, react,
+from .rotas import (aprovacao, audio, comandos, editonny, estudio, fontes, ia, kits, legendas, projetos, publicacao, react,
                     referencias, revisao, timeline, zoom)
 
 app = FastAPI(title="Clipador")
@@ -53,5 +53,5 @@ def inicio():
 
 # ordem importa: o FastAPI casa a primeira rota que servir (a das areas antigas e a do app.py monolitico original)
 for _m in (projetos, fontes, zoom, kits, revisao, react, timeline, audio, legendas, ia, referencias, comandos, publicacao, estudio,
-           editonny):
+           editonny, aprovacao):
     app.include_router(_m.router)

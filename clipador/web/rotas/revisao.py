@@ -4,7 +4,7 @@ import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from ...core import projeto, publicacao, render, tarefas
+from ...core import editonny_fala, projeto, publicacao, render, tarefas
 from ..comum import _carregar, _estado
 
 router = APIRouter()
@@ -71,6 +71,9 @@ def renderizar(nome: str, modo: str):
     p = _carregar(nome)
     if modo == "final" and p["aprovacao"].get("aprovado_hash") != projeto.hash_conteudo(p):
         raise HTTPException(400, "aprove o rascunho atual antes de gerar o FINAL")
+
+    if modo == "rascunho" and p.get("editor") == "editonny":     # pessoa falando: o editonny edita e legenda
+        return tarefas.iniciar("rascunho", lambda progresso: editonny_fala.editar(nome, progresso))
 
     def job(progresso):
         saida = render.render(projeto.carregar(nome), modo, progresso)

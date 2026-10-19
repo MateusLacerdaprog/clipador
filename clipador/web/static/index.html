@@ -26,9 +26,31 @@
   <div class="ferramentas-lateral">
     <button id="abrir-ia" title="Configurar provedores de IA"><span aria-hidden="true">🤖</span> Provedores de IA</button>
     <button id="abrir-ref" title="Perfis de referência editorial"><span aria-hidden="true">📚</span> Referências</button>
+    <button id="abrir-aprovacao" title="Rascunhos esperando sua aprovação e vídeos aprovados"><span aria-hidden="true">✅</span> Aprovação</button>
     <button id="abrir-kits" title="Kits do canal e presets de zoom (edite sem abrir um projeto)"><span aria-hidden="true">🎨</span> Biblioteca de estilos</button>
   </div>
 </aside>
+
+<dialog id="dlg-aprovacao" aria-labelledby="dlg-aprovacao-titulo">
+  <div class="dlg-topo"><h2 id="dlg-aprovacao-titulo">Aprovação</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
+  <p class="dica">Rascunhos de todos os projetos. Assista, aprove (o FINAL é gerado na hora) ou escreva o que ajustar. Nada é publicado daqui.</p>
+  <div class="linha" role="group" aria-label="Filtro da lista">
+    <button type="button" class="modo" data-filtro-ap="pendentes" aria-pressed="true">Esperando você</button>
+    <button type="button" class="modo" data-filtro-ap="aprovados" aria-pressed="false">Aprovados</button>
+  </div>
+  <div id="ap-lista" role="list" aria-label="Vídeos para aprovação"></div>
+  <div id="ap-detalhe" hidden>
+    <h3 id="ap-nome"></h3>
+    <video id="ap-player" controls playsinline style="max-height:60vh;max-width:100%" aria-label="Vídeo selecionado"></video>
+    <label>O que ajustar (o Claude lê este recado)<textarea id="ap-nota" rows="3" style="width:100%"></textarea></label>
+    <div class="linha">
+      <button id="ap-aprovar" class="primario"><span aria-hidden="true">✔</span> Aprovar e gerar FINAL</button>
+      <button id="ap-ajuste">Pedir ajuste</button>
+      <button id="ap-abrir">Abrir o projeto</button>
+    </div>
+    <div class="tarefa" id="ap-tarefa"></div>
+  </div>
+</dialog>
 
 <dialog id="dlg-kits" aria-labelledby="dlg-kits-titulo">
   <div class="dlg-topo"><h2 id="dlg-kits-titulo">Biblioteca de estilos</h2><button class="mini" data-fechar aria-label="Fechar"><span aria-hidden="true">✕</span></button></div>
@@ -692,6 +714,10 @@
         </div>
         <div class="tarefa" id="tarefa-render"></div>
         <div class="linha" id="lista-saidas" role="group" aria-label="Vídeos gerados"></div>
+        <div class="linha"><label>Quem edita este vídeo <select id="sel-editor">
+            <option value="clipador">Clipador (gameplay/trailer, legenda karaokê)</option>
+            <option value="editonny">editonny (pessoa falando: legenda e layout dele)</option></select></label>
+          <span class="dica">o editonny só aceita vídeo com uma pessoa falando; sem fala, fica o Clipador.</span></div>
         <div class="linha"><button id="exportar-1x1" disabled>Versão 1:1 (quadrada) do vídeo selecionado</button>
           <span class="dica">recorta a faixa com a ação e a legenda do RASCUNHO/FINAL, sem renderizar de novo (feed do Instagram/Facebook).</span></div>
         <div class="linha"><button id="exportar-4x5" disabled>Versão 4:5 (retrato do feed do Instagram) do vídeo selecionado</button>
@@ -924,6 +950,7 @@
 <script src="/static/js/publicacao.js"></script>
 <script src="/static/js/timeline.js"></script>
 <script src="/static/js/react.js"></script>
+<script src="/static/js/aprovacao.js"></script>
 <script src="/static/js/inicio.js"></script>
 </body>
 </html>

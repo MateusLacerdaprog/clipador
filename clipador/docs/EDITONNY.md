@@ -56,6 +56,19 @@ Fica de fora de propósito: legendas do editonny (as do Clipador seguem a regra 
 Para um vídeo de **câmera falando** (Reels de rosto), o editonny inteiro pode ser usado direto pela skill
 `/editonny`, fora do Clipador, e o MP4 dele entra no Clipador como fonte para publicar (aba 7).
 
+## Editor editonny por projeto (pessoa falando)
+Decisão do usuário (19/10/2026): cada projeto escolhe quem edita (aba 7 → "Quem edita este vídeo"). O editonny é
+usado **só** em vídeo gravado com uma pessoa falando: transcrição local (Whisper `small`), EDL com uma faixa por frase
+dentro dos trechos da timeline, `waveform_cut` (pausas e respirações), `render_cut`, enquadramento por rosto,
+legenda e layout do editonny, render do HyperFrames → `RASCUNHO_<nome>.mp4`. Menos de 8 palavras ou voz em menos de
+30% do tempo = recusa ("use o editor do Clipador"). Os vídeos de gameplay/trailer (GTA 6) continuam no Clipador.
+Trabalho em `projetos/<n>/editonny/` (o Claude pode refinar com `/editonny`). O FINAL é a cópia do rascunho aprovado.
+Testado com uma narração real de 16 s: saiu 13,8 s, 1080×1920, com legenda.
+
+## Aprovação
+Botão ✅ Aprovação na lateral: rascunhos de todos os projetos ("Esperando você") e FINAIS ("Aprovados"). Aprovar
+gera o FINAL (e o PUBLICACAO.md); "Pedir ajuste" grava o recado em `projeto.revisao_nota`. Nada é publicado.
+
 ## Comandos
 ```bash
 python -m clipador editonny status

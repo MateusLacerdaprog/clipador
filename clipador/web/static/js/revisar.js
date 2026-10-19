@@ -15,6 +15,7 @@ function renderRevisar() {
     + `<button type="button" class="mini" data-excluir-saida="${esc(s)}" title="apaga este arquivo do projeto" aria-label="Excluir ${esc(s)}">✕</button></div>`).join("")
     || `<p class="dica">Nenhum vídeo gerado ainda.</p>`;
   renderGraficos();
+  $("#sel-editor").value = P.editor || "clipador";
   const comCaps = !!P.formato_cfg?.capitulos;
   $("#bloco-capitulos").hidden = !comCaps;
   if (comCaps) api("GET", `${base()}/capitulos`).then((c) => {
@@ -110,4 +111,10 @@ $("#aprovar").onclick = () => tentar(async () => {
 $("#gerar-final").onclick = () => tentar(async () => {
   const r = await acompanhar(await api("POST", `${base()}/render/final`), "#tarefa-render");
   await recarregar(); $("#player-saida").src = arq(r.arquivo); aviso("FINAL gerado: " + r.arquivo);
+});
+$("#sel-editor").onchange = (e) => tentar(async () => {
+  try { P = await api("PUT", `${base()}/editor`, { editor: e.target.value }); }
+  finally { renderTudo(); }
+  aviso(P.editor === "editonny" ? "Este projeto agora é editado pelo editonny: o RASCUNHO sai com a legenda e o layout dele."
+    : "Este projeto volta ao editor do Clipador.");
 });
