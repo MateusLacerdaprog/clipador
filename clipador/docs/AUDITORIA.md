@@ -227,6 +227,7 @@ Take-Two (uso não comercial). Estratégia: 3 canais em português + canal 4 (GT
   conflito com o título do início. Sem gráficos, o comando do FFmpeg e as impressões (aprovação/prévia) não mudam.
 - ✅ Narração sem pausas (plano → aplicar → Desfazer) com o `tighten_cut` do editonny.
 - ✅ Versão 4:5 (1080×1350) para o feed do Instagram (`render.exportar_4x5`, botão na aba 7).
+- ✅ Editor por projeto: editonny para pessoa falando (legenda/layout dele até o RASCUNHO) e janela Aprovação com a fila de todos os projetos (19/10/2026).
 - 📋 Escolher e posicionar gráficos pela interface (hoje: pedido na conversa/CLI; a aba 7 lista e remove).
 
 ## 6. Como executar e validar

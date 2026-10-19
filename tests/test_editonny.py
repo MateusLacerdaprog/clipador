@@ -268,3 +268,79 @@ def test_linha_de_comando(falso, projeto_base, capsys):
     assert cli_editonny.main(["grafico", projeto_base["nome"], "solar-system", "--inicio", "1"]) == 1
     assert "The universe in 3D" in capsys.readouterr().out                 # sem texto do usuario: recusa
     assert cli_editonny.main(["remover", projeto_base["nome"], "0"]) == 1
+
+
+# ------------------------------------------------------------------ editor editonny (pessoa falando) e aprovacao
+def _pal(*itens):
+    return [{"text": t, "start": a, "end": b} for t, a, b in itens]
+
+
+def test_frases_e_edl_so_com_fala(projeto_base):
+    from clipador.core import editonny_fala as EF
+    pal = _pal(("um", 1.0, 1.3), ("dois", 1.4, 1.7), ("tres", 2.5, 2.8), ("quatro", 2.9, 3.4), ("fora", 7.0, 7.3))
+    assert EF.frases(pal, 1.0, 4.0) == [(1.0, 1.82), (2.45, 3.52)]
+    p = projeto_base                                       # trechos 1-4 s e 6-9 s da fonte f1
+    with pytest.raises(ValueError, match="pessoa falando"):
+        EF.montar_edl(p, {"f1": pal})                      # 5 palavras, pouca voz: fica com o Clipador
+    muitas = _pal(*[(f"p{i}", 1.0 + i * 0.25, 1.2 + i * 0.25) for i in range(12)]
+                  + [(f"q{i}", 6.0 + i * 0.25, 6.2 + i * 0.25) for i in range(12)])
+    edl = EF.montar_edl(p, {"f1": muitas})
+    assert edl["output"]["format"] == "vertical" and set(edl["sources"]) == {"f1"}
+    assert [(r["start"], r["end"]) for r in edl["ranges"]] == [(1.0, 4.0), (6.0, 9.0)]
+
+
+def test_editor_por_projeto_e_fila(falso, projeto_base, cli, midia):
+    from clipador.core import aprovacao
+    n = projeto_base["nome"]
+    h0 = projeto.hash_conteudo(projeto.carregar(n))
+    assert cli.put(f"/api/projetos/{n}/editor", json={"editor": "outro"}).status_code == 400
+    p = projeto.carregar(n)
+    p["fontes"].append({"id": "f2", "caminho": midia["mudo"], "nome": "mudo.mp4", "info": {"dur": 6, "audio": False}, "cenas": []})
+    p["segmentos"][1]["fonte"] = "f2"
+    projeto.salvar(p)
+    assert "não tem som" in cli.put(f"/api/projetos/{n}/editor", json={"editor": "editonny"}).json()["detail"]
+    p["segmentos"][1]["fonte"] = "f1"
+    projeto.salvar(p)
+    assert cli.put(f"/api/projetos/{n}/editor", json={"editor": "editonny"}).json()["editor"] == "editonny"
+    p = projeto.carregar(n)
+    h = projeto.hash_conteudo(p)
+    assert h != h0                                          # outro editor = outro video: aprovacao antiga nao vale
+    assert aprovacao.item(p) is None                        # sem video ainda: fora da fila
+    d = projeto.pasta(n)
+    shutil.copy(midia["video"], os.path.join(d, f"RASCUNHO_{n}.mp4"))
+    assert aprovacao.item(p)["estado"] == "desatualizado"
+    assert cli.post(f"/api/aprovacao/{n}/aprovar").status_code == 400
+    projeto.alterar(n, lambda a: a["aprovacao"].update(rascunho_hash=h))
+    assert [i for i in cli.get("/api/aprovacao").json()["itens"] if i["nome"] == n][0]["estado"] == "aguardando"
+    r = cli.post(f"/api/aprovacao/{n}/ajuste", json={"nota": "corta o começo"}).json()
+    assert r["nota"] == "corta o começo" and projeto.carregar(n)["revisao_nota"] == "corta o começo"
+    e = _esperar(cli, cli.post(f"/api/aprovacao/{n}/aprovar").json())
+    assert e["estado"] == "ok", e["erro"]
+    assert e["resultado"]["arquivo"] == f"FINAL_{n}.mp4"    # editonny: o FINAL e o rascunho aprovado, copiado
+    assert sonda(os.path.join(d, f"FINAL_{n}.mp4"))["dur"] == pytest.approx(sonda(midia["video"])["dur"], abs=0.1)
+    assert aprovacao.item(projeto.carregar(n))["estado"] == "aprovado"
+    assert os.path.isfile(os.path.join(d, "PUBLICACAO.md"))
+    t = cli.post(f"/api/projetos/{n}/render/rascunho").json()  # rascunho do editonny vai para o editonny
+    assert t["tipo"] == "rascunho" and "motor" in _esperar(cli, t)["erro"]
+
+
+VOZ_REAL = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "minha_narracao_gta6.wav")
+
+
+@pytest.mark.lento
+@real
+@pytest.mark.skipif(not os.path.isfile(VOZ_REAL), reason="sem gravacao de voz real nesta maquina")
+def test_editonny_edita_pessoa_falando(cli, midia, tmp_path):
+    from conftest import ffmpeg
+    from clipador.core import editonny_fala, midia as M
+    video = str(tmp_path / "fala.mp4")
+    ffmpeg("-f", "lavfi", "-i", "testsrc2=s=1080x1920:r=30:d=16", "-ss", "0", "-t", "16", "-i", VOZ_REAL,
+           "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", video)
+    p = projeto.criar("t-editonny-fala")
+    p["fontes"].append({"id": "f1", "caminho": video, "nome": "fala.mp4", "info": M.info(video), "cenas": []})
+    projeto.salvar(p)
+    editonny_fala.definir_editor(p["nome"], "editonny")
+    r = editonny_fala.editar(p["nome"])
+    s = sonda(os.path.join(projeto.pasta(p["nome"]), r["arquivo"]))
+    assert (s["w"], s["h"]) == (1080, 1920) and s["audio"] and 3 < s["dur"] <= 16.1
+    assert cli.get(f"/api/projetos/{p['nome']}").json()["rascunho_atual"]
