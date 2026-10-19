@@ -13,7 +13,7 @@ import subprocess
 import threading
 import time
 
-from . import audio, formatos, kits, layouts, legendas, midia, projeto, react
+from . import audio, editonny, formatos, kits, layouts, legendas, midia, projeto, react
 from .midia import SEM_JANELA
 
 CODIFICACAO = {
@@ -268,6 +268,31 @@ def _logo_do_canal(g, marca, layout, total, vb):
     return "vmarca"
 
 
+def _graficos_editonny(g, p, d, vb):
+    """Graficos do editonny (WebM VP9 com transparencia, 1080x1920) sobre o video, por baixo das legendas."""
+    if not editonny.vertical(p):
+        raise ErroRender("os gráficos do editonny são verticais (9:16) e este vídeo é 16:9: remova-os")
+    for gr in p["graficos"]:
+        try:
+            ini, dur = float(gr["inicio"]), float(gr["duracao"])
+        except (KeyError, TypeError, ValueError):
+            raise ErroRender("gráfico do editonny com tempo inválido")
+        if ini < 0 or not 0 < dur <= editonny.DUR_MAX:
+            raise ErroRender("gráfico do editonny com tempo inválido")
+
+    def entrada(gr):
+        try:
+            c = editonny.caminho_grafico(d, gr.get("arquivo"))
+        except ValueError as e:
+            raise ErroRender(str(e))
+        if not os.path.isfile(c):
+            raise ErroRender(f"gráfico não encontrado: {gr['arquivo']} (gere de novo ou remova)")
+        return g.entrada(c, pre=("-c:v", "libvpx-vp9"))       # o decodificador nativo ignora a transparencia
+    filtros, vb = editonny.filtros_graficos(p["graficos"], entrada, vb)
+    g.filtros.extend(filtros)
+    return vb
+
+
 def _arquivo_da_biblioteca(tipo, nome, rotulo):
     """Caminho seguro em musicas/ ou efeitos/ (o nome vira parametro do FFmpeg) e arquivo presente."""
     try:
@@ -347,8 +372,9 @@ def _linha_de_comando(g, p, d, modo, total, saida, quadros):
 
 
 def montar_comando(p, modo, tempos=None, saida=None, solo=None):
-    """Comando FFmpeg do modo: trechos -> camera do React -> logo -> legenda/quadros -> audio -> saida.
-    A ordem das entradas (-i) faz parte do comando: trechos, camera, recorte, logo, musica, narracao, efeitos."""
+    """Comando FFmpeg do modo: trechos -> camera do React -> logo -> graficos do editonny -> legenda/quadros -> audio
+    -> saida. A ordem das entradas (-i) faz parte do comando: trechos, camera, recorte, logo, graficos, musica,
+    narracao, efeitos."""
     if not p["segmentos"]:
         raise ErroRender("o projeto nao tem segmentos (escolha os cortes primeiro)")
     if p["layout"] not in layouts.LAYOUTS:
@@ -370,6 +396,8 @@ def montar_comando(p, modo, tempos=None, saida=None, solo=None):
     marca = p.get("marca") or {}
     if marca.get("arquivo") and modo != "audio":
         vb = _logo_do_canal(g, marca, layout, total, vb)
+    if p.get("graficos") and modo != "audio":
+        vb = _graficos_editonny(g, p, d, vb)
     quadros = _fechar_grafo(g, p, d, modo, layout, vb, total, tempos,
                             mixar=lambda: _camadas_de_audio(g, A, total, modo, narr_path))
     return _linha_de_comando(g, p, d, modo, total, saida, quadros)
@@ -443,7 +471,7 @@ def verificar_saida(caminho, total, video=True, audio=True):
         raise ErroRender(f"duracao inesperada no arquivo gerado ({dur:.2f} s, esperado {total:.2f} s)")
     if video:
         v = next(s for s in info["streams"] if s.get("codec_type") == "video")
-        if (v.get("width"), v.get("height")) not in ((1080, 1920), (540, 960), (1920, 1080), (960, 540), (1080, 1080)):
+        if (v.get("width"), v.get("height")) not in ((1080, 1920), (540, 960), (1920, 1080), (960, 540), (1080, 1080), (1080, 1350)):
             raise ErroRender(f"resolucao inesperada: {v.get('width')}x{v.get('height')}")
     return {"dur": round(dur, 3)}
 
@@ -468,6 +496,8 @@ def exportar_1x1(p, arquivo, progresso=None):
     i = midia.info(origem)
     if i["w"] == i["h"]:
         raise ErroRender("este arquivo já é a versão 1:1")
+    if i["w"] * 5 == i["h"] * 4:
+        raise ErroRender("escolha o vídeo vertical, não a versão 4:5")
     if layout == "horizontal":
         crop = f"crop=1080:1080:{(i['w'] - 1080) // 2}:0" if i["h"] == 1080 else f"crop=ih:ih,scale=1080:1080"
     else:
@@ -488,6 +518,36 @@ def exportar_1x1(p, arquivo, progresso=None):
                  progresso, audio=not sem_audio)
     return saida
 
+
+def exportar_4x5(p, arquivo, progresso=None):
+    """Versao 4:5 (1080x1350, o retrato do feed do Instagram) de um RASCUNHO/FINAL ja gerado, sem renderizar de novo:
+    recorta a faixa com o gancho, a acao e a legenda (a mesma da 1:1). Comparacao A×B nao cabe."""
+    d, base, origem = _saida_pronta(p, arquivo)
+    layout = layout_efetivo(p)
+    if layout not in FAIXA_1X1:
+        raise ErroRender("este layout (comparação A×B ou React em tela dividida) não cabe em 4:5 sem cortar metade")
+    i = midia.info(origem)
+    if i["w"] == i["h"] or i["w"] * 5 == i["h"] * 4:            # ja e a versao 1:1 ou 4:5
+        raise ErroRender("escolha o vídeo vertical (não a versão 1:1 ou 4:5)")
+    if layout == "horizontal":
+        crop = "crop=ih*4/5:ih,scale=1080:1350"                # centro do 16:9
+    else:
+        topo, base_ = faixa_1x1(p, layout)
+        k = i["h"] / 1920                                   # proxy em meia resolucao tambem funciona
+        alt = base_ - topo
+        if alt <= 1350:                                     # cabe: retrato 4:5 centrado na faixa
+            y = min(max(0, topo - (1350 - alt) // 2), 1920 - 1350)
+            crop = f"crop={i['w']}:{int(i['w'] * 5 / 4) // 2 * 2}:0:{int(y * k)},scale=1080:1350"
+        else:                                               # nao cabe: faixa inteira + laterais desfocadas
+            h = int(alt * k) // 2 * 2
+            crop = (f"crop={i['w']}:{h}:0:{int(topo * k)},scale=-2:1350,split[a][b];[b]scale=1080:1350,boxblur=30:3,"
+                    f"eq=brightness=-0.2[f];[f][a]overlay=(W-w)/2:0")
+    saida = os.path.join(d, base[:-4] + "_4x5.mp4")
+    sem_audio = not i["audio"]
+    _recodificar(["-i", origem, "-vf", crop, "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+                  *(["-an"] if sem_audio else ["-c:a", "copy"])], saida[:-4] + ".tmp.mp4", saida, i["dur"], d,
+                 progresso, audio=not sem_audio)
+    return saida
 
 def _recodificar(args, tmp, saida, dur, d, progresso, audio=True):
     """Gera `saida` a partir de um RASCUNHO/FINAL pronto: grava no .tmp, confere com ffprobe e so entao renomeia."""

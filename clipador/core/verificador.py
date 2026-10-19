@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 
-from . import audio, conformidade, formatos, midia, projeto, react, timeline
+from . import audio, conformidade, editonny, formatos, midia, projeto, react, timeline
 
 MIN_CENA_PADRAO = 1.0      # plano mais curto que isso "pisca" (formatos podem pedir mais: comparacao 2,2 s)
 MAX_CENA_PADRAO = 4.0      # curto sem formato: trocar a imagem a cada 2-4 s
@@ -96,6 +96,33 @@ def _item(nivel, titulo, detalhe="", como=""):
     return {"nivel": nivel, "titulo": titulo, "detalhe": detalhe, "como_resolver": como}
 
 
+def verificar_graficos(p, total, tem_legenda):
+    """Graficos do editonny: arquivo presente, dentro do video, sem disputar o alto da tela com o titulo do inicio."""
+    itens, d = [], projeto.pasta(p["nome"])
+    G = p.get("gancho") or {}
+    ate_gancho = float(G.get("ate") or 0) if (G.get("texto") or "").strip() else 0.0
+    for gr in p.get("graficos") or []:
+        ini = float(gr["inicio"])
+        fim = ini + float(gr["duracao"])
+        nome = f"{gr.get('nome') or gr.get('cena')} ({ini:.1f}–{fim:.1f} s)"
+        try:
+            existe = os.path.isfile(editonny.caminho_grafico(d, gr.get("arquivo")))
+        except ValueError:
+            existe = False
+        if not existe:
+            itens.append(_item("erro", "Gráfico do editonny não encontrado", nome,
+                               "Peça o gráfico de novo ou remova na aba 7 · Revisar."))
+        if fim > total + 0.05:
+            itens.append(_item("aviso", "Gráfico passa do fim do vídeo", nome, "Mova o gráfico para mais cedo."))
+        if ini < ate_gancho:
+            itens.append(_item("aviso", "Gráfico junto com o título do início", f"{nome}; título até {ate_gancho:.1f} s",
+                               "Os dois ficam no alto da tela: comece o gráfico depois do título ou encurte o título."))
+        if gr.get("esconde_legenda") and tem_legenda:
+            itens.append(_item("dica", "Gráfico de tela cheia com a legenda por cima", nome,
+                               "A cena foi feita para cobrir a tela: confira nos quadros se a legenda atrapalha."))
+    return itens
+
+
 def verificar_projeto(p):
     itens, d = [], projeto.pasta(p["nome"])
     total = projeto.duracao_timeline(p)
@@ -148,6 +175,7 @@ def verificar_projeto(p):
     itens += [i for i in verificar_retencao(p, cart, total)
               if not (i["titulo"] == "Sem legenda" and narr)]          # sem legenda com narracao ja foi avisado acima
     itens += conformidade.verificar(p)                                  # direitos, termos de risco, duplicado (docs/cpv/04)
+    itens += verificar_graficos(p, total, bool(cart))
     # react
     R = react.completar(p.get("react"))
     if R["ativo"]:

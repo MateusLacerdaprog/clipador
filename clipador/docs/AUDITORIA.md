@@ -219,6 +219,16 @@ Take-Two (uso não comercial). Estratégia: 3 canais em português + canal 4 (GT
 - 📋 Telas do estúdio no app (I15); gerador de mapas (I13, precisa de dados Natural Earth); validar o importador com um
   CSV real do Studio; publicação via API (opcional, nunca automática).
 
+## 18. editonny (skill de edição de Matheus Gomes) integrado (19/10/2026) ✅
+- ✅ Instalado em `~/.local/share/editonny` (fora do OneDrive/Git), registrado como `/editonny` no Claude Code;
+  origem, impressão digital, licenças e telemetria desligada em `docs/EDITONNY.md`.
+- ✅ Gráficos animados (145 cenas) como camada transparente sobre a montagem, por baixo da legenda
+  (`core/editonny.py`, `projeto.graficos`, `render._graficos_editonny`); textos sempre do usuário; Verificador avisa
+  conflito com o título do início. Sem gráficos, o comando do FFmpeg e as impressões (aprovação/prévia) não mudam.
+- ✅ Narração sem pausas (plano → aplicar → Desfazer) com o `tighten_cut` do editonny.
+- ✅ Versão 4:5 (1080×1350) para o feed do Instagram (`render.exportar_4x5`, botão na aba 7).
+- 📋 Escolher e posicionar gráficos pela interface (hoje: pedido na conversa/CLI; a aba 7 lista e remove).
+
 ## 6. Como executar e validar
 ```bash
 python -m clipador          # abre http://127.0.0.1:8765 (ou "Abrir Clipador.bat")

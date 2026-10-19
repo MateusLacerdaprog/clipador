@@ -266,7 +266,7 @@ def _sim_nao(v):
     return "Sim" if v is True else "Não" if v is False else "⚠ NÃO DECLARADO"
 
 
-VARIANTES = ("_1x1.mp4", "_sem_audio.mp4")      # versoes derivadas de um RASCUNHO/FINAL (nao sao "o" video)
+VARIANTES = ("_1x1.mp4", "_4x5.mp4", "_sem_audio.mp4")      # versoes derivadas de um RASCUNHO/FINAL (nao sao "o" video)
 
 
 def _mais_recente(p, prefixo):

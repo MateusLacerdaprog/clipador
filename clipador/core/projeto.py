@@ -43,6 +43,8 @@ PADRAO = {
     "canal": None,                  # canal do estudio (core/canais.py) — limite diario, originalidade, resultados
     "roteiro_id": None,             # roteiro aprovado que originou o projeto (core/roteiros.py)
     "publicacao_registro": None,    # {url, video_id, registrado_em}: o USUARIO publicou e informou o link (core/esteira.py)
+    "graficos": [],                 # cenas do editonny sobre a montagem: [{arquivo, cena, inicio, duracao, ...}] (core/editonny.py)
+    "narracao_anterior": None,      # narracao de antes do aperto de pausas (Desfazer)
 }
 
 # bibliotecas de audio compartilhadas entre projetos (o usuario coloca os arquivos)
@@ -243,6 +245,8 @@ def hash_previa(p):
         relevante["audio"] = {k: v for k, v in relevante["audio"].items() if k != "narracao"}
     if relevante["layout"] != "comparacao":      # so muda o video na comparacao (nao invalida projetos antigos)
         relevante.pop("comparacao")
+    if p.get("graficos"):
+        relevante["graficos"] = [{k: gr.get(k) for k in ("arquivo", "inicio", "duracao")} for gr in p["graficos"]]
     return hashlib.sha1(json.dumps(relevante, sort_keys=True).encode()).hexdigest()[:16]
 
 
@@ -285,8 +289,13 @@ def hash_conteudo(p):
         f.pop("direitos", None)           # registrar a licenca tambem nao
     if relevante["layout"] != "comparacao":
         relevante.pop("comparacao")
+    graficos = p.get("graficos") or []
+    if graficos:                          # so entra quando existe: projetos sem graficos mantem a mesma impressao
+        relevante["graficos"] = [{k: gr.get(k) for k in ("arquivo", "inicio", "duracao")} for gr in graficos]
     h = hashlib.sha1(json.dumps(relevante, sort_keys=True).encode())
     d = pasta(p["nome"])
+    for gr in graficos:
+        h.update(_assinatura(os.path.join(d, *str(gr.get("arquivo") or "").split("/"))).encode())
     for tipo, nome in arquivos_de_audio(p):
         h.update(_assinatura(caminho_biblioteca(tipo, nome)).encode())
     for nome in ("legenda_cartoes.json", p.get("narracao") or "",

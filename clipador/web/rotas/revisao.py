@@ -1,4 +1,4 @@
-"""Rotas de revisao/exportacao: previa, quadros, RASCUNHO, aprovar, FINAL, versao 1:1, saidas."""
+"""Rotas de revisao/exportacao: previa, quadros, RASCUNHO, aprovar, FINAL, versoes 1:1 e 4:5, saidas."""
 import os
 
 from fastapi import APIRouter, HTTPException
@@ -22,6 +22,16 @@ def exportar_1x1(nome: str, dados: Exportar1x1):
         raise HTTPException(400, "este layout (comparação A×B ou React em tela dividida) não cabe em 1:1")
     return tarefas.iniciar("render", lambda progresso: {"saida": os.path.basename(
         render.exportar_1x1(p, dados.arquivo, progresso))})
+
+
+@router.post("/api/projetos/{nome}/exportar_4x5")
+def exportar_4x5(nome: str, dados: Exportar1x1):
+    """Versao 4:5 (1080x1350) para o feed do Instagram, recortada do RASCUNHO/FINAL pronto."""
+    p = _carregar(nome)
+    if render.layout_efetivo(p) not in render.FAIXA_1X1:
+        raise HTTPException(400, "este layout (comparação A×B ou React em tela dividida) não cabe em 4:5")
+    return tarefas.iniciar("render", lambda progresso: {"saida": os.path.basename(
+        render.exportar_4x5(p, dados.arquivo, progresso))})
 
 
 @router.post("/api/projetos/{nome}/exportar_sem_audio")
