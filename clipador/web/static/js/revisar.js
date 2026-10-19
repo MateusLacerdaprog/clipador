@@ -14,6 +14,7 @@ function renderRevisar() {
   $("#lista-saidas").innerHTML = P.saidas.map((s) => `<div class="saida-par"><button type="button" class="saida ${s.startsWith("FINAL") ? "final" : ""}${s === saidaSel ? " ativa" : ""}" data-s="${esc(s)}" aria-pressed="${s === saidaSel}">${esc(s)}</button>`
     + `<button type="button" class="mini" data-excluir-saida="${esc(s)}" title="apaga este arquivo do projeto" aria-label="Excluir ${esc(s)}">✕</button></div>`).join("")
     || `<p class="dica">Nenhum vídeo gerado ainda.</p>`;
+  renderGraficos();
   const comCaps = !!P.formato_cfg?.capitulos;
   $("#bloco-capitulos").hidden = !comCaps;
   if (comCaps) api("GET", `${base()}/capitulos`).then((c) => {
@@ -42,8 +43,29 @@ $("#exportar-1x1").onclick = () => tentar(async () => {
   P = await api("GET", base()); renderTudo();
   aviso(`Versão 1:1 gerada: ${r.saida} (confira o enquadramento antes de postar).`);
 });
-function habilitarDerivados(s) {        // versoes feitas a partir do video selecionado (1:1 e sem audio)
-  $("#exportar-1x1").disabled = !s || s.endsWith("_1x1.mp4");
+$("#exportar-4x5").onclick = () => tentar(async () => {
+  if (!saidaSel) throw new Error("clique primeiro num RASCUNHO ou FINAL da lista");
+  const r = await acompanhar(await api("POST", `${base()}/exportar_4x5`, { arquivo: saidaSel }), "#tarefa-render");
+  P = await api("GET", base()); renderTudo();
+  aviso(`Versão 4:5 gerada: ${r.saida} (confira o enquadramento antes de postar).`);
+});
+function renderGraficos() {             // cenas do editonny sobre a montagem (core/editonny.py)
+  const g = P.graficos || [];
+  $("#bloco-graficos").hidden = !g.length;
+  $("#lista-graficos").innerHTML = g.map((x, i) => `<div class="linha"><span>${esc(x.nome)} · ${x.inicio.toFixed(1)}–${(x.inicio + x.duracao).toFixed(1)} s`
+    + `${x.esconde_legenda ? " · cobre a tela inteira" : ""}</span>`
+    + `<button type="button" class="mini" data-remover-grafico="${i}" aria-label="Remover o gráfico ${esc(x.nome)}">Remover</button></div>`).join("");
+}
+$("#lista-graficos").onclick = (e) => {
+  const i = e.target.dataset.removerGrafico; if (i === undefined) return;
+  tentar(async () => {
+    if (!confirm("Remover este gráfico? O arquivo dele é apagado (dá para pedir de novo ao Claude).")) return;
+    P = await api("DELETE", `${base()}/graficos/${Number(i)}`); renderTudo(); aviso("Gráfico removido.");
+  });
+};
+function habilitarDerivados(s) {        // versoes feitas a partir do video selecionado (1:1, 4:5 e sem audio)
+  $("#exportar-1x1").disabled = !s || s.endsWith("_1x1.mp4") || s.endsWith("_4x5.mp4");
+  $("#exportar-4x5").disabled = !s || s.endsWith("_1x1.mp4") || s.endsWith("_4x5.mp4");
   $("#exportar-sem-audio").disabled = !s || s.includes("_sem_audio");
 }
 $("#exportar-sem-audio").onclick = () => tentar(async () => {
