@@ -57,3 +57,15 @@ def editor(nome: str, dados: Editor):
         return _estado(editonny_fala.definir_editor(nome, dados.editor))
     except ValueError as e:
         raise HTTPException(400, str(e))
+
+
+class Motion(BaseModel):
+    ativo: bool
+
+
+@router.put("/api/projetos/{nome}/motion")
+def motion_ativo(nome: str, dados: Motion):
+    """Liga/desliga o motion automatico da skill effectcraft na edicao do editonny."""
+    from ..comum import _estado
+    _carregar(nome)
+    return _estado(projeto.alterar(nome, lambda p: p.update(motion=dados.ativo)))

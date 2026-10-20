@@ -46,6 +46,8 @@ PADRAO = {
     "graficos": [],                 # cenas do editonny sobre a montagem: [{arquivo, cena, inicio, duracao, ...}] (core/editonny.py)
     "narracao_anterior": None,      # narracao de antes do aperto de pausas (Desfazer)
     "editor": "clipador",           # clipador | editonny (pessoa falando: legenda e layout do editonny; core/editonny_fala.py)
+    "motion": True,                 # editor editonny: motion automatico da skill effectcraft (core/motion.py)
+    "motion_plano": [],             # o que o motion pos no ultimo rascunho (so leitura)
     "revisao_nota": "",             # pedido de ajuste escrito pelo usuario na aba Aprovacao
 }
 
@@ -294,6 +296,8 @@ def hash_conteudo(p):
     graficos = p.get("graficos") or []
     if p.get("editor") == "editonny":     # o mesmo corte editado por outro editor e outro video
         relevante["editor"] = "editonny"
+        if p.get("motion") is False:
+            relevante["motion"] = False
     if graficos:                          # so entra quando existe: projetos sem graficos mantem a mesma impressao
         relevante["graficos"] = [{k: gr.get(k) for k in ("arquivo", "inicio", "duracao")} for gr in graficos]
     h = hashlib.sha1(json.dumps(relevante, sort_keys=True).encode())

@@ -65,6 +65,15 @@ legenda e layout do editonny, render do HyperFrames → `RASCUNHO_<nome>.mp4`. M
 Trabalho em `projetos/<n>/editonny/` (o Claude pode refinar com `/editonny`). O FINAL é a cópia do rascunho aprovado.
 Testado com uma narração real de 16 s: saiu 13,8 s, 1080×1920, com legenda.
 
+## Motion automático (skill effectcraft do usuário, 20/10/2026)
+Depois do render do editonny, `core/motion.py` planeja e queima títulos de motion feitos pela skill
+`.claude/skills/effectcraft` (EffectCraft 0.10, WebM com alfa): abertura com a 1ª frase falada (ou um pedaço de 3–5
+palavras que não termina em artigo/preposição), pergunta/exclamação curta inteira no meio, contador quando um número
+é falado e o fim da última frase. Só palavras da transcrição; amarelo `#FFDE00`, y=230 (acima do rosto, longe da
+legenda); mínimo 1,8 s de tela; sem sobreposição. Caixa "Motion automático" na aba 7 desliga.
+Comparação real (vídeo de 47 s de pessoa falando): `projetos/pereira-dentista-antes` (só editonny) ×
+`projetos/pereira-dentista-depois` (editonny + effectcraft: 3 títulos).
+
 ## Aprovação
 Botão ✅ Aprovação na lateral: rascunhos de todos os projetos ("Esperando você") e FINAIS ("Aprovados"). Aprovar
 gera o FINAL (e o PUBLICACAO.md); "Pedir ajuste" grava o recado em `projeto.revisao_nota`. Nada é publicado.
