@@ -10,7 +10,7 @@ import os
 import shutil
 import subprocess
 
-from . import editonny, midia, projeto
+from . import editonny, midia, motion, projeto
 from .midia import SEM_JANELA
 
 EDITORES = ("clipador", "editonny")
@@ -161,7 +161,13 @@ def editar(nome, progresso=None, modelo=MODELO):
     d = projeto.pasta(nome)
     final = os.path.join(d, f"RASCUNHO_{p['nome']}.mp4")
     tmp = final[:-4] + ".tmp.mp4"
-    shutil.copy2(saida_hf, tmp)
+    plano_motion = []
+    if p.get("motion", True) and motion.disponivel():       # skill effectcraft do usuario: motion com a propria fala
+        prog(0.9, "Motion da skill effectcraft…")
+        plano = motion.planejar(_palavras(edit, os.path.join(edit, "cut.mp4")), midia.info(saida_hf)["dur"])
+        plano_motion = motion.aplicar(saida_hf, tmp, plano) if plano else []
+    if not plano_motion:
+        shutil.copy2(saida_hf, tmp)
     i = midia.info(tmp)
     if not i["audio"] or i["dur"] < 1:
         os.remove(tmp)
@@ -170,9 +176,11 @@ def editar(nome, progresso=None, modelo=MODELO):
 
     def marcar(atual):
         atual["aprovacao"]["rascunho_hash"] = marca
+        atual["motion_plano"] = plano_motion
     projeto.alterar(nome, marcar)
     prog(1.0, "Rascunho do editonny pronto")
-    return {"arquivo": os.path.basename(final), "duracao": round(i["dur"], 2), "faixas": len(edl["ranges"])}
+    return {"arquivo": os.path.basename(final), "duracao": round(i["dur"], 2), "faixas": len(edl["ranges"]),
+            "motion": plano_motion}
 
 
 def final_por_copia(p):

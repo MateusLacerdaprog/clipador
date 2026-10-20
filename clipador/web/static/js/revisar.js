@@ -16,6 +16,8 @@ function renderRevisar() {
     || `<p class="dica">Nenhum vídeo gerado ainda.</p>`;
   renderGraficos();
   $("#sel-editor").value = P.editor || "clipador";
+  $("#linha-motion").hidden = P.editor !== "editonny";
+  $("#chk-motion").checked = P.motion !== false;
   const comCaps = !!P.formato_cfg?.capitulos;
   $("#bloco-capitulos").hidden = !comCaps;
   if (comCaps) api("GET", `${base()}/capitulos`).then((c) => {
@@ -117,4 +119,8 @@ $("#sel-editor").onchange = (e) => tentar(async () => {
   finally { renderTudo(); }
   aviso(P.editor === "editonny" ? "Este projeto agora é editado pelo editonny: o RASCUNHO sai com a legenda e o layout dele."
     : "Este projeto volta ao editor do Clipador.");
+});
+$("#chk-motion").onchange = (e) => tentar(async () => {
+  P = await api("PUT", `${base()}/motion`, { ativo: e.target.checked }); renderTudo();
+  aviso(P.motion ? "Motion automático ligado no próximo rascunho." : "Motion automático desligado no próximo rascunho.");
 });
