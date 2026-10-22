@@ -36,3 +36,13 @@ cortar_memes.py
 
 # Dados do estudio (canais, ideias, roteiros, metricas)
 estudio/
+
+# Trabalho para clientes e pesquisa com dados de terceiros (nunca no Git)
+auditoria_instagram_querubim/
+socialmedia_pesquisa/
+
+# Segredos (defesa extra: as chaves ficam no cofre do Windows)
+.env
+.env.*
+*.pem
+*.key
