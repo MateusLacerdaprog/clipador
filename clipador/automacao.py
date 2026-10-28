@@ -133,6 +133,30 @@ def referencia(nome, com_fala=True, log=print):
     return perfil
 
 
+def medir_reels(a, log=print):
+    """python -m clipador reels NOME --top conta:ID ... [--controle conta:ID ...] (core/reels.py)."""
+    from .core import reels
+    try:
+        itens = [reels.item(t, "top") for t in a.top] + [reels.item(t, "controle") for t in a.controle]
+        return reels.medir_lote(a.nome, itens, a.modelo, a.paralelo, a.cookies_navegador, a.manter_videos, log)
+    except ValueError as e:
+        raise ErroAutomacao(str(e))
+
+
+def resumo_reels(d):
+    from .core import reels
+    linhas = [f"Lote “{d['nome']}” ({d['data']}): {len(d['videos'])} vídeo(s) → {reels.pasta(d['nome'])}"]
+    for g, r in d["resumo"].items():
+        linhas.append(f"  {g} (n={r['n']}): duração {r['dur']} s, plano mediano {r['plano_mediana']} s, "
+                      f"1º corte {r['primeiro_corte']} s, {r['lufs']} LUFS, fala {r['ppm']} pal/min "
+                      f"({r['fala_no_quadro_0']}/{r['com_fala']} falam no quadro 0)")
+    erros = [k for k, v in d["videos"].items() if "erro" in v]
+    if erros:
+        linhas.append(f"  não baixaram: {', '.join(erros)}")
+    linhas.append(f"  folhas de quadros: {len(d['folhas'])} imagem(ns) em folhas/")
+    return "\n".join(linhas)
+
+
 def resumo_referencia(perfil):
     o = perfil["observado"]
     linhas = [f"\nPerfil “{perfil['nome']}” (id {perfil['id']}) a partir de {len(perfil['fonte']['videos'])} vídeo(s):"]
@@ -201,10 +225,22 @@ def main(argv):
     r_ = sub.add_parser("referencia", help="mede os vídeos de referencias/videos/NOME e cria o perfil")
     r_.add_argument("nome")
     r_.add_argument("--sem-fala", action="store_true", help="não transcreve (mais rápido; sem ritmo de fala)")
+    rl = sub.add_parser("reels", help="baixa Reels/Shorts pelo ID, mede (cortes, loudness, fala) e apaga os vídeos")
+    rl.add_argument("nome", help="nome do lote (vira referencias/reels/NOME/)")
+    rl.add_argument("--top", nargs="+", default=[], help="Reels fora da curva: conta:ID (ou conta:link)")
+    rl.add_argument("--controle", nargs="*", default=[], help="1 Reel na mediana de cada conta: conta:ID")
+    rl.add_argument("--modelo", default="small", help="modelo do Whisper")
+    rl.add_argument("--paralelo", type=int, default=2, help="transcrições ao mesmo tempo")
+    rl.add_argument("--cookies-navegador", default=None,
+                    help="chrome|edge|firefox — só se o Reel exigir login e o usuário autorizar")
+    rl.add_argument("--manter-videos", action="store_true", help="não apaga os vídeos baixados")
     a = ap.parse_args(argv)
     try:
         if a.cmd == "referencia":
             print(resumo_referencia(referencia(a.nome, com_fala=not a.sem_fala)))
+            return 0
+        if a.cmd == "reels":
+            print(resumo_reels(medir_reels(a)))
             return 0
         c = Clipador()
         if a.cmd == "montar":

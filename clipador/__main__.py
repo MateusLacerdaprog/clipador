@@ -10,7 +10,7 @@ import uvicorn
 
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] in ("montar", "finalizar", "referencia"):
+    if len(sys.argv) > 1 and sys.argv[1] in ("montar", "finalizar", "referencia", "reels"):
         from . import automacao
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")     # console do Windows: aspas e acentos
         sys.exit(automacao.main(sys.argv[1:]))
