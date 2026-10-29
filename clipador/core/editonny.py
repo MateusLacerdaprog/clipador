@@ -31,7 +31,10 @@ DUR_MAX = 30.0
 MAX_GRAFICOS = 40
 TEXTO_MAX = 120
 ESTILOS = ("night", "paper", "amber")
-SEM_TELEMETRIA = {"HYPERFRAMES_NO_TELEMETRY": "1", "DO_NOT_TRACK": "1", "HF_CLI_TELEMETRY_DISABLED": "1"}
+SEM_TELEMETRIA = {"HYPERFRAMES_NO_TELEMETRY": "1", "DO_NOT_TRACK": "1", "HF_CLI_TELEMETRY_DISABLED": "1",
+                  # sem auto-atualização/instalação nem leitura de .env pelo HyperFrames
+                  "HYPERFRAMES_NO_UPDATE_CHECK": "1", "HYPERFRAMES_NO_AUTO_INSTALL": "1",
+                  "HYPERFRAMES_NO_CAPTURE_DOTENV": "1"}
 
 
 class ErroEditonny(RuntimeError):

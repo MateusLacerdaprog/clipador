@@ -60,3 +60,7 @@ clipador/docs/PESQUISA_REFERENCIAS_2026-10.md
 clipador/docs/cpv/01-pesquisa-videos.md
 clipador/docs/cpv/02-shorts-virais.md
 clipador/docs/cpv/dados_fase3_*.json
+
+# logs de outros programas (ex.: NVIDIA App) que caem na pasta
+debug.log
+*.log
