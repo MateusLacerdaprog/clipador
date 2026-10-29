@@ -33,7 +33,7 @@ TEXTO = {".md", ".txt", ".json", ".yaml", ".yml", ".py", ".js", ".html", ".css",
 # link com identificador concreto (post, vídeo, perfil, canal); modelos como {id}, ID, XXXX ou "..." passam
 LINK = re.compile(r"(?:instagram\.com/(?:reels?/|p/|tv/)?|tiktok\.com/@?|youtu\.be/|"
                   r"youtube\.com/(?:watch\?v=|shorts/|@|channel/|c/))([^\s)\"'`<>]*)", re.I)
-MARCADORES = ("{", "}", "id", "xxx", "...", "teste", "exemplo", "canal")
+MARCADORES = ("{", "}", "id", "xxx", "...", "teste", "exemplo", "canal", "terceiro")
 PADROES = [
     (re.compile(r"[A-Za-z]:[\\/]+Users[\\/]+(?!\.\.\.)[^\\/\s]+", re.I), "caminho pessoal"),
     (re.compile(r"\b(?:sk-(?:ant-)?(?![\w-]*(?:teste|TESTE|FALSA|NAO-E-REAL))[A-Za-z0-9_-]{20,}|"
