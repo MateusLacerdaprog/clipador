@@ -1,5 +1,5 @@
-"""Perfis de referencia: comparacao e aplicacao (com perfil construido aqui; a coleta real do canal
-[terceiro] Gta6 foi feita em 16/10/2026 e esta em referencias/[terceiro]-gta-6.json)."""
+"""Perfis de referencia: comparacao e aplicacao (com perfil construido aqui). Perfis reais medem canais de
+terceiros e ficam so na maquina (referencias/*.json fora do Git)."""
 import json
 import os
 
@@ -58,10 +58,11 @@ def test_gerar_so_aceita_youtube():
     assert r.status_code == 400
 
 
-def test_perfil_real_do_davy_jones_existe_e_tem_dados_observados():
-    caminho = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "referencias",
-                           "[terceiro]-gta-6.json")
-    if not os.path.isfile(caminho):
-        pytest.skip("perfil real não está nesta máquina")
+def test_perfil_real_local_tem_dados_observados():
+    pasta = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "referencias")
+    reais = sorted(f for f in os.listdir(pasta) if f.endswith(".json")) if os.path.isdir(pasta) else []
+    if not reais:
+        pytest.skip("nenhum perfil real nesta máquina (são de terceiros: ficam fora do Git)")
+    caminho = os.path.join(pasta, reais[0])
     p = json.load(open(caminho, encoding="utf-8"))
     assert p["fonte"]["amostra"]["curtos"] > 50 and p["observado"]["visual"]["cortes_por_min_curtos"] > 0

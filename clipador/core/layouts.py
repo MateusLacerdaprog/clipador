@@ -1,7 +1,7 @@
 """Presets de enquadramento vertical 1080x1920. Cada funcao devolve a cadeia de filtros de UM segmento.
 
 tela_cheia : recorte 9:16 do quadro (foco_x escolhe a area) com zoom lento opcional
-empilhado  : bloco nitido 1080x864 em y=300 + fundo desfocado escurecido (padrao [terceiro]/[terceiro])
+empilhado  : bloco nitido 1080x864 em y=300 + fundo desfocado escurecido (padrao de veiculos de games)
 comparacao : duas fontes, uma em cima e outra embaixo (A x B)
 """
 from . import zoom as _zoom

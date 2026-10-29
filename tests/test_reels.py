@@ -37,11 +37,11 @@ STDERR = """
 
 
 def test_item_aceita_id_e_link_e_recusa_formato_errado():
-    assert reels.item("[terceiro]:[terceiro]", "top") == {
-        "conta": "[terceiro]", "id": "[terceiro]", "url": "https://www.instagram.com/reel/[terceiro]/", "grupo": "top"}
-    it = reels.item("bk:https://www.instagram.com/reels/[terceiro]/", "controle")
-    assert it["id"] == "[terceiro]" and it["url"].startswith("https://www.instagram.com/reels/")
-    for ruim in ("semdoispontos", ":DearWEX", "[terceiro]:", "con ta:ID", "x:https://site.com/qualquer"):
+    assert reels.item("loja:ABCteste123", "top") == {
+        "conta": "loja", "id": "ABCteste123", "url": "https://www.instagram.com/reel/ABCteste123/", "grupo": "top"}
+    it = reels.item("outra:https://www.instagram.com/reels/XYZ789teste/", "controle")
+    assert it["id"] == "XYZ789teste" and it["url"].startswith("https://www.instagram.com/reels/")
+    for ruim in ("semdoispontos", ":ABC123", "loja:", "con ta:ID", "x:https://site.com/qualquer"):
         with pytest.raises(ValueError):
             reels.item(ruim, "top")
 

@@ -17,7 +17,7 @@ ESTILOS = {
     # 1-2 palavras grandes no meio da tela (padrao dos Shorts de detalhe que viralizaram)
     "palavra": {"max_palavras": 3, "max_chars": 16, "quebra_linha": 99, "tamanho": 108,
                 "contorno": 9, "sombra": 3, "caixa": False},
-    # frase curta em caixa branca (padrao [terceiro])
+    # frase curta em caixa branca (padrao de veiculos de games)
     "caixa": {"max_palavras": 6, "max_chars": 30, "quebra_linha": 99, "tamanho": 58,
               "contorno": 14, "sombra": 0, "caixa": True},
 }

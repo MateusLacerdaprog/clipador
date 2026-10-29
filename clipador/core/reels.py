@@ -34,7 +34,7 @@ def item(texto, grupo):
     """'conta:ID' ou 'conta:https://...' -> {'conta', 'id', 'url', 'grupo'}."""
     conta, sep, alvo = texto.partition(":")
     if not sep or not conta or not alvo:
-        raise ValueError(f"use conta:ID (ex.: [terceiro]:[terceiro]), recebi “{texto}”")
+        raise ValueError(f"use conta:ID (ex.: loja:ABCteste123), recebi “{texto}”")
     url = alvo if alvo.startswith("http") else f"https://www.instagram.com/reel/{alvo}/"
     vid = re.search(r"/(?:reel|reels|p|shorts)/([\w-]+)", url)
     if not re.fullmatch(r"[\w.-]{1,40}", conta) or not vid:

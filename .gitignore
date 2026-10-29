@@ -47,3 +47,16 @@ socialmedia_pesquisa/
 .env.*
 *.pem
 *.key
+
+# Regra: nada de terceiros no Git (repositorio publico). Material de terceiros fica so na maquina.
+terceiros/
+# Skills de outros autores: so na maquina (a effectcraft e propria)
+.claude/skills/*
+!.claude/skills/effectcraft/
+# Perfis e pesquisas que medem canais/videos de terceiros: so na maquina
+referencias/*.json
+clipador/docs/pesquisa_youtube_2026-10.json
+clipador/docs/PESQUISA_REFERENCIAS_2026-10.md
+clipador/docs/cpv/01-pesquisa-videos.md
+clipador/docs/cpv/02-shorts-virais.md
+clipador/docs/cpv/dados_fase3_*.json
