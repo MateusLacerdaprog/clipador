@@ -13,9 +13,22 @@
 | **Problema** | Editar um Short/Reel à mão leva horas: achar o trecho, cortar, legendar palavra por palavra, mixar voz e música, exportar em 9:16, 1:1 e 4:5 e escrever o texto de cada rede. |
 | **Solução** | Um app local (FastAPI + JS) com uma API única que serve tanto a interface quanto **agentes de IA** (Claude Code, Claude/GPT/Gemini/Ollama pela API). O agente monta tudo até o RASCUNHO; a pessoa revisa e aprova numa fila. |
 | **Construído** | em 2 semanas (16–30/10/2026), com IA como par de programação: **40 módulos de núcleo, 151 rotas de API, 286 testes automatizados**, ~11 mil linhas de Python. |
+| **Tração** | **2 empresas já pagaram e usam o serviço** de edição: uma loja que vende farinha e um consultório odontológico. Outras empresas já pediram para contratar. |
 | **Diferencial** | Guardrails de verdade: nada é publicado sozinho, chaves só no cofre do Windows, a IA nunca escreve texto que a pessoa não falou, e o FINAL é bloqueado no servidor se o vídeo mudou depois da aprovação. |
 
 ---
+
+## Validação com clientes pagantes
+
+O Clipador já está em uso comercial: **duas empresas pagaram pela edição dos seus vídeos** de Instagram e
+continuam usando o serviço, com **novos interessados querendo contratar**.
+
+| Cliente | Tipo de vídeo | O que o sistema faz |
+|---|---|---|
+| Loja de venda de farinha | Reels de produto e oferta | Montagem ágil, legenda, títulos de motion e versões para o feed |
+| Consultório odontológico | Especialista falando para a câmera | Corte de pausas pela forma de onda, enquadramento pelo rosto, legenda e títulos com as palavras faladas |
+
+Os nomes dos clientes e os vídeos deles ficam fora do repositório (público) por respeito à privacidade de cada um.
 
 ## O que ele faz
 
