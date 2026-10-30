@@ -29,6 +29,8 @@ PASTAS_PROIBIDAS = ("terceiros/", "_versoes/", "memes_cortados/", "entrada_mp4/"
 EXTENSOES_PROIBIDAS = {".mp4", ".mov", ".mkv", ".webm", ".avi", ".wav", ".mp3", ".m4a", ".aac", ".flac", ".ogg",
                        ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".pdf", ".zip", ".7z",
                        ".rar", ".bundle", ".ecproj", ".pyc"}
+# capturas de tela PRÓPRIAS do app, feitas com um projeto de demonstração sintético (sem mídia de terceiros)
+MIDIA_PROPRIA, EXT_MIDIA_PROPRIA = "docs/demo/", {".png", ".jpg", ".jpeg", ".webp"}
 TEXTO = {".md", ".txt", ".json", ".yaml", ".yml", ".py", ".js", ".html", ".css", ".toml", ".cfg", ".ini", ".csv"}
 # link com identificador concreto (post, vídeo, perfil, canal); modelos como {id}, ID, XXXX ou "..." passam
 LINK = re.compile(r"(?:instagram\.com/(?:reels?/|p/|tv/)?|tiktok\.com/@?|youtu\.be/|"
@@ -92,6 +94,8 @@ def verificar(arquivos: List[str], ler) -> List[str]:
             continue
         if a.startswith(PASTAS_PROIBIDAS):
             achados.append(f"{a}: pasta local (não versionar)")
+            continue
+        if a.startswith(MIDIA_PROPRIA) and "/" not in a[len(MIDIA_PROPRIA):]                 and Path(a).suffix.lower() in EXT_MIDIA_PROPRIA:
             continue
         if Path(a).suffix.lower() in EXTENSOES_PROIBIDAS:
             achados.append(f"{a}: mídia/binário")
